@@ -1,0 +1,22 @@
+0:0:0:0:0:0:0:1 [14/maio/2024 16:50:09.379] PostmanRuntime/7.38.0 "GET /healthcheck HTTP/1.1" 200 14
+0:0:0:0:0:0:0:1 [14/maio/2024 16:50:16.995] PostmanRuntime/7.38.0 "GET /ping HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [14/maio/2024 16:50:29.132] PostmanRuntime/7.38.0 "GET /ping HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [14/maio/2024 16:50:37.028] PostmanRuntime/7.38.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 16:53:57.065] Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 "GET /healthcheck HTTP/1.1" 200 14
+0:0:0:0:0:0:0:1 [14/maio/2024 16:53:59.054] Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 "GET /healthcheck HTTP/1.1" 200 14
+0:0:0:0:0:0:0:1 [14/maio/2024 16:54:05.803] PostmanRuntime/7.38.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 16:56:09.420] PostmanRuntime/7.38.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 16:58:09.870] PostmanRuntime/7.38.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:21:39.469] PostmanRuntime/7.38.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:24:50.774] PostmanRuntime/7.39.0 "GET /healthcheck HTTP/1.1" 200 14
+0:0:0:0:0:0:0:1 [14/maio/2024 17:25:02.997] PostmanRuntime/7.39.0 "GET /ping HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [14/maio/2024 17:26:35.310] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:32:38.723] PostmanRuntime/7.39.0 "GET /healthcheck HTTP/1.1" 200 14
+0:0:0:0:0:0:0:1 [14/maio/2024 17:32:50.224] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:38:21.559] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:40:41.856] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:47:35.737] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:51:24.004] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:51:27.737] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:53:49.638] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [14/maio/2024 17:56:37.570] PostmanRuntime/7.39.0 "GET /mesas HTTP/1.1" 500 26

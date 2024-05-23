@@ -1,0 +1,64 @@
+unit dao.mesas;
+
+interface
+
+uses
+  ADRConn.DAO.Base,
+  ADRConn.Model.Factory,
+  ADRCOnn.Model.Interfaces,
+
+  DataSet.Serialize,
+
+  System.Classes,
+  System.JSON,
+  System.StrUtils,
+  System.SysUtils;
+
+type
+  TADRConnDAOMesa = class(TADRConnDAOBase)
+    private
+    public
+      function list(): TJSONArray;
+      function FIND(AFind: Integer): TJSONObject;
+      function Update(AID: Integer; AValue: string): TJSONArray;
+  end;
+
+implementation
+
+{ TADRConnDAOMesa }
+
+function TADRConnDAOMesa.List: TJSONArray;
+{$Region 'SELECT'}
+const
+  LSelect   = 'SELECT ID, NUM_MESA, OCUPADA FROM MESA ORDER BY ID';
+{$EndRegion}
+var
+  LDataSet   : TDataSet;
+begin
+  try
+    try
+      LDataset :=
+        FQuery
+          .SQL(LSelect)
+          .OpenDataSet;
+
+      Result := LDataset.ToJSONArray;
+    except
+      Result := TJSONArray.Create;
+    end;
+  finally
+    LDataSet.Free;
+  end;
+end;
+
+function TADRConnDAOMesa.FIND(AFind: Integer): TJSONObject;
+begin
+
+end;
+
+function TADRConnDAOMesa.Update(AID: Integer; AValue: string): TJSONArray;
+begin
+
+end;
+
+end.

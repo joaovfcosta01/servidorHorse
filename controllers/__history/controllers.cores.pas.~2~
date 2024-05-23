@@ -1,0 +1,53 @@
+unit controllers.cores;
+
+interface
+
+procedure Registry;
+
+implementation
+
+uses
+  Horse,
+
+  ADRConn.Model.Factory,
+  ADRConn.Model.Interfaces,
+
+  DAO.Cores,
+
+  System.Classes,
+  System.JSON,
+  System.StrUtils,
+  System.SysUtils;
+
+procedure DoList(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+  LDAO    : TADRConnDAOCores;
+  LConn   : IADRConnection;
+  LResult : TJSONArray;
+begin
+  LConn := TADRConnModelFactory.GetConnectionIniFile();
+  LConn.Connect;
+  LDAO := TADRConnDAOCores.Create(LConn);
+  try
+    LResult := LDAO.List;
+    if LResult.Count > 0 then
+      Res
+        .Send<TJSONArray>(LResult)
+        .Status(THTTPStatus.OK)
+    else
+      Res
+        .Send<TJSONArray>(LResult)
+        .Status(THTTPStatus.NotFound)
+  finally
+    LDao.Free;
+  end;
+end;
+
+
+procedure Registry;
+begin
+  THorse.Get ('/cores'        , DoList);
+  THorse.Get ('/cores/:id'    , DoFind);
+  THorse.Put ('/cores/:id'    , DoUpdate);
+end;
+end.

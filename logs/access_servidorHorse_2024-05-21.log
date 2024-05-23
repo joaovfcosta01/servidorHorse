@@ -1,0 +1,53 @@
+0:0:0:0:0:0:0:1 [21/maio/2024 14:35:05.808] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 14:58:03.388] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 14:59:08.172] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:00:00.371] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:00:40.355] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:00:40.355] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:01:52.085] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:03:18.401] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:18:05.838] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:21:35.377] PostmanRuntime/7.39.0 "GET /cores/1 HTTP/1.1" 404 9
+127.0.0.1 [21/maio/2024 15:23:07.558] Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 "GET /cores/1 HTTP/1.1" 404 9
+127.0.0.1 [21/maio/2024 15:23:07.640] Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 "GET /favicon.ico HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:24:03.263] PostmanRuntime/7.39.0 "GET /cores/1 HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:24:08.417] PostmanRuntime/7.39.0 "GET /cores/g HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:24:08.417] PostmanRuntime/7.39.0 "GET /cores/g HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:24:40.627] PostmanRuntime/7.39.0 "GET /mesas/1 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 15:25:05.811] PostmanRuntime/7.39.0 "GET /mesas/2 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 15:25:59.641] PostmanRuntime/7.39.0 "GET /mesas/ HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 15:26:13.980] PostmanRuntime/7.39.0 "GET /mesas/3 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 15:26:40.591] PostmanRuntime/7.39.0 "GET /mesas/3 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 15:28:00.695] PostmanRuntime/7.39.0 "GET /mesas/3 HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 15:35:09.773] PostmanRuntime/7.39.0 "GET /cores/g HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:35:14.497] PostmanRuntime/7.39.0 "GET /cores/g HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:47:36.445] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:47:36.445] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 15:49:45.495] PostmanRuntime/7.39.0 "GET /cores HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 15:51:04.193] PostmanRuntime/7.39.0 "GET /cores/g HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 15:51:14.779] PostmanRuntime/7.39.0 "GET /cores/1 HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 16:18:25.138] PostmanRuntime/7.39.0 "GET /comandas/ HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 16:20:33.632] PostmanRuntime/7.39.0 "GET /comandas/ HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 16:23:17.585] PostmanRuntime/7.39.0 "GET /comandas/ HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 16:26:16.180] PostmanRuntime/7.39.0 "GET /comandas/ HTTP/1.1" 404 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 16:27:19.989] PostmanRuntime/7.39.0 "GET /comandas/ HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 16:46:55.130] PostmanRuntime/7.39.0 "GET /comandas/1 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 16:47:25.500] PostmanRuntime/7.39.0 "GET /comandas/1 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 16:50:26.566] PostmanRuntime/7.39.0 "GET /comandas HTTP/1.1" 200 -1
+192.168.0.213 [21/maio/2024 16:54:45.845] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /healthckeack HTTP/1.1" 404 9
+192.168.0.213 [21/maio/2024 16:54:50.687] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /healthckeack HTTP/1.1" 404 9
+192.168.0.213 [21/maio/2024 16:54:50.687] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /healthckeack HTTP/1.1" 404 9
+192.168.0.213 [21/maio/2024 16:55:05.086] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /comandas HTTP/1.1" 200 -1
+192.168.0.213 [21/maio/2024 16:56:09.719] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /mesas HTTP/1.1" 200 -1
+192.168.0.213 [21/maio/2024 16:56:19.757] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /comandas HTTP/1.1" 200 -1
+192.168.0.213 [21/maio/2024 16:56:22.732] Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/125.0.6422.51 Mobile/15E148 Safari/604.1 "GET /cores HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 16:58:22.308] PostmanRuntime/7.39.0 "GET /comandas/1 HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 17:04:08.488] PostmanRuntime/7.39.0 "GET /comandas/1 HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:26:51.331] PostmanRuntime/7.39.0 "GET /comandas/1 HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:27:38.008] PostmanRuntime/7.39.0 "GET /comandas HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:28:08.525] PostmanRuntime/7.39.0 "POST /comandas HTTP/1.1" 200 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:45:36.420] PostmanRuntime/7.39.0 "PUT /comandas/ HTTP/1.1" 500 26
+0:0:0:0:0:0:0:1 [21/maio/2024 17:45:56.476] PostmanRuntime/7.39.0 "PUT /comandas/9 HTTP/1.1" 404 9
+0:0:0:0:0:0:0:1 [21/maio/2024 17:46:50.469] PostmanRuntime/7.39.0 "PUT /comandas/9 HTTP/1.1" 404 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:47:34.744] PostmanRuntime/7.39.0 "PUT /comandas/9 HTTP/1.1" 404 -1
+0:0:0:0:0:0:0:1 [21/maio/2024 17:49:20.269] PostmanRuntime/7.39.0 "PUT /comandas/9 HTTP/1.1" 200 -1

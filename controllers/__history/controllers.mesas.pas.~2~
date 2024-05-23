@@ -1,0 +1,32 @@
+unit controllers.mesas;
+
+interface
+
+procedure Registry;
+
+implementation
+
+uses
+  Horse;
+
+procedure DoList(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+begin
+  Res.Send('DoList');
+end;
+procedure DoFind(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+begin
+  Res.Send('DoFind');
+end;
+procedure DoUpdate(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+begin
+  Res.Send('DoUpdate');
+end;
+
+procedure Registry;
+begin
+  THorse.Get('/mesas'      ,  DoList);
+  THorse.Get('/mesas/:id'  ,  DoFind);
+  THorse.Put('/mesas/:id'  ,  DoUpdate);
+  end;
+
+end.

@@ -1,0 +1,62 @@
+unit controllers.mesas;
+
+interface
+
+procedure Registry;
+
+implementation
+
+uses
+  Horse,
+
+  ADRConn.Model.Factory,
+  ADRConn.Model.Interfaces,
+
+  DAO.Mesas,
+
+  System.Classes,
+  System.JSON,
+  System.StrUtils,
+  System.SysUtils;
+
+procedure DoList(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+  LDAO    : TADRConnDAOMesa;
+  LConn   : IADRConnection;
+  LResult : TJSONArray;
+begin
+  LConn := TADRConnModelFactory.GetConnectionIniFile();
+  LConn.Connect;
+  LDAO := TADRConnDAOMesa.Create(LConn);
+  try
+    LResult := LDAO.List;
+    if LResult.Count > 0 then
+      Res
+        .Send<TJSONArray>(LResult)
+        .Status(THTTPStatus.OK)
+    else
+      Res
+        .Send<TJSONArray>(LResult)
+        .Status(THTTPStatus.NotFound)
+  finally
+    LDao.Free;
+  end;
+end;
+
+procedure DoFind(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+begin
+  Res.Send('DoFind');
+end;
+procedure DoUpdate(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+begin
+  Res.Send('DoUpdate');
+end;
+
+procedure Registry;
+begin
+  THorse.Get('/mesas'      ,  DoList);
+  THorse.Get('/mesas/:id'  ,  DoFind);
+  THorse.Put('/mesas/:id'  ,  DoUpdate);
+  end;
+
+end.

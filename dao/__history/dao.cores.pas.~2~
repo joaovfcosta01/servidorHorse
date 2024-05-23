@@ -1,0 +1,52 @@
+unit dao.cores;
+
+interface
+
+uses
+  Data.DB,
+  ADRConn.DAO.Base,
+  ADRConn.Model.Factory,
+  ADRCOnn.Model.Interfaces,
+
+  DataSet.Serialize,
+
+  System.Classes,
+  System.JSON,
+  System.StrUtils,
+  System.SysUtils;
+
+type
+  TADRConnDAOMesa = class(TADRConnDAOBase)
+    private
+    public
+      function List(): TJSONArray;
+      function Find(AID: Integer): TJSONObject;
+      function Insert(AValue: string): TJSONObject;
+      function Update(AID: Integer; AValue: string): TJSONArray;
+  end;
+
+implementation
+
+{ TADRConnDAOMesa }
+
+function TADRConnDAOMesa.Find(AID: Integer): TJSONObject;
+begin
+
+end;
+
+function TADRConnDAOMesa.Insert(AValue: string): TJSONObject;
+begin
+
+end;
+
+function TADRConnDAOMesa.List: TJSONArray;
+begin
+
+end;
+
+function TADRConnDAOMesa.Update(AID: Integer; AValue: string): TJSONArray;
+begin
+
+end;
+
+end.

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2024/04/08 10:33:02.000.321,=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Unit5.pas</Transaction>
+    <Transaction>2024/05/07 14:32:28.000.621,C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\servidorHorse.dproj=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2024/05/10 14:31:09.000.087,=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/10 14:31:19.000.760,=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\Unit2.pas</Transaction>
+    <Transaction>2024/05/10 14:33:35.000.537,C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\controllers\controllers.mesas.pas=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/10 14:34:03.000.802,C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\dao\dao.mesas.pas=C:\Users\Usuario\Documents\Embarcadero\Studio\Projects\Mobile\Servidor Horse\Unit2.pas</Transaction>
+    <Transaction>2024/05/17 16:26:45.000.846,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/17 16:27:40.000.430,C:\Servidor_Horse\Unit1.pas=C:\Servidor_Horse\controllers\controllers.cores.pas</Transaction>
+    <Transaction>2024/05/17 16:27:48.000.012,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/17 16:28:10.000.482,C:\Servidor_Horse\Unit1.pas=C:\Servidor_Horse\dao\dao.cores.pas</Transaction>
+    <Transaction>2024/05/21 15:56:49.000.583,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/21 15:57:16.000.298,C:\Servidor_Horse\dao\dao.comandas.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/21 15:58:56.000.187,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/21 15:59:12.000.250,C:\Servidor_Horse\controllers\controllers.comandas.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 15:07:08.000.708,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 15:07:32.000.446,C:\Servidor_Horse\Unit1.pas=C:\Servidor_Horse\controllers\controllers.usuarios.pas</Transaction>
+    <Transaction>2024/05/22 15:07:37.000.993,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 15:07:57.000.644,C:\Servidor_Horse\Unit1.pas=C:\Servidor_Horse\dao\dao.usuarios.pas</Transaction>
+    <Transaction>2024/05/22 17:22:27.664,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:23:12.634,C:\Servidor_Horse\dao\dao.produtos.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:24:12.829,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:24:34.313,C:\Servidor_Horse\controllers\controllers.produtos.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:47:36.720,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:48:02.193,C:\Servidor_Horse\controllers\controllers.pedidos.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:48:07.290,=C:\Servidor_Horse\Unit1.pas</Transaction>
+    <Transaction>2024/05/22 17:48:30.922,C:\Servidor_Horse\dao\dao.pedidos.pas=C:\Servidor_Horse\Unit1.pas</Transaction>
+  </Transactions>  <ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="controllers"/>
+    <File Path="controllers\controllers.comandas.pas"/>
+    <File Path="controllers\controllers.cores.pas"/>
+    <File Path="controllers\controllers.mesas.pas"/>
+    <File Path="controllers\controllers.usuarios.pas"/>
+    <File Path="controllers\controllers.produtos.pas"/>
+    <File Path="controllers\controllers.pedidos.pas"/>
+    <File Path="dao"/>
+    <File Path="dao\dao.comandas.pas"/>
+    <File Path="dao\dao.cores.pas"/>
+    <File Path="dao\dao.mesas.pas"/>
+    <File Path="dao\dao.usuarios.pas"/>
+    <File Path="dao\dao.produtos.pas"/>
+    <File Path="dao\dao.pedidos.pas"/>
+  </ProjectSortOrder>
+</BorlandProject>
