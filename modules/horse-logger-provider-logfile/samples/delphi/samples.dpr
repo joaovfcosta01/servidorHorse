@@ -9,13 +9,13 @@ uses
   Horse.Logger.Provider.LogFile, // It's necessary to use the unit
   System.SysUtils;
 
-//var
-//  LLogFileConfig: THorseLoggerLogFileConfig;
+var
+  LLogFileConfig: THorseLoggerLogFileConfig;
 
 begin
-  // LLogFileConfig := THorseLoggerLogFileConfig.New
-  //  .SetLogFormat('${request_clientip} [${time}] ${response_status}')
-  //  .SetDir('D:\Servidores\Log');
+  LLogFileConfig := THorseLoggerLogFileConfig.New
+    .SetLogFormat('${request_clientip} [${time}] ${response_status}')
+    .SetDir('D:\Servidores\Log');
 
   // You can also specify the log format and the path where it will be saved:
   // THorseLoggerManager.RegisterProvider(THorseLoggerProviderLogFile.New(LLogFileConfig));
@@ -27,7 +27,7 @@ begin
   THorse.Use(THorseLoggerManager.HorseCallback);
 
   THorse.Get('/ping',
-    procedure(Req: THorseRequest; Res: THorseResponse)
+    procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
     begin
       Res.Send('{"nome":"Vinicius"}').ContentType('application/json');
     end);

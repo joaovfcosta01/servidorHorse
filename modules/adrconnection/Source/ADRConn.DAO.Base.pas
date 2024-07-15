@@ -12,19 +12,20 @@ type
   TADRConnDAOBase = class(TInterfacedObject)
   private
     FManagerTransaction: Boolean;
+
   protected
     FConnection: IADRConnection;
     FQuery: IADRQuery;
 
     function ManagerTransaction: Boolean; overload;
-    procedure ManagerTransaction(AValue: Boolean); overload;
+    procedure ManagerTransaction(Value: Boolean); overload;
   public
-    constructor Create(AConnection: IADRConnection);
+    constructor create(Connection: IADRConnection);
 
     procedure StartTransaction;
     procedure Commit;
     procedure Rollback;
-  end;
+end;
 
 implementation
 
@@ -36,16 +37,16 @@ begin
     FConnection.Commit;
 end;
 
-constructor TADRConnDAOBase.Create(AConnection: IADRConnection);
+constructor TADRConnDAOBase.create(Connection: IADRConnection);
 begin
-  FConnection := AConnection;
+  FConnection := Connection;
   FQuery := CreateQuery(FConnection);
   FManagerTransaction := True;
 end;
 
-procedure TADRConnDAOBase.ManagerTransaction(AValue: Boolean);
+procedure TADRConnDAOBase.ManagerTransaction(Value: Boolean);
 begin
-  FManagerTransaction := AValue;
+  FManagerTransaction := Value;
 end;
 
 procedure TADRConnDAOBase.Rollback;
@@ -62,7 +63,7 @@ end;
 
 function TADRConnDAOBase.ManagerTransaction: Boolean;
 begin
-  Result := FManagerTransaction;
+  result := FManagerTransaction;
 end;
 
 end.

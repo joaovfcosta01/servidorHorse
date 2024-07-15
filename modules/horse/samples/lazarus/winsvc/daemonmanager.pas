@@ -8,7 +8,15 @@ uses
   Classes, SysUtils, DaemonApp;
 
 type
+
+  { TDaemon_Manager }
+
   TDaemon_Manager = class(TDaemonMapper)
+    procedure Daemon_ManagerCreate(Sender: TObject);
+  private
+
+  public
+
   end;
 
 var
@@ -23,7 +31,15 @@ end;
 
 {$R *.lfm}
 
+{ TDaemon_Manager }
+
+procedure TDaemon_Manager.Daemon_ManagerCreate(Sender: TObject);
+begin
+
+end;
+
+
 initialization
   RegisterMapper;
-
 end.
+

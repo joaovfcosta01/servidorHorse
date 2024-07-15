@@ -130,7 +130,7 @@ begin
   end;
 end;
 //------------------------------------------------------------------------------
- procedure DoLogin(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+procedure DoLogin(Req: THorseRequest; Res: THorseResponse; Next: TProc);
 var
   LDAO    : TADRConnDAOUsuario;
   LConn   : IADRConnection;
@@ -138,13 +138,13 @@ var
   LResult : TJSONObject;
   LID     : Integer;
 begin
-  if Req.Body.IsEmpty then
-    raise Exception.Create('Corpo da requisição inválido. Envie um JSONArray '+
-                            'com os dados a serem inseridos.');
+  //Testamos se recebemos um JSON no Body
+//  /if Req.Body.IsEmpty then
+//    raise Exception.Create('Corpo da requisição inválido. Envie um JSONArray com os dados a serem inseridos.');
 
-  LConn := TADRConnModelFactory.GetConnectionIniFile();
+  LConn   := TADRConnModelFactory.GetConnectionIniFile;
   LConn.Connect;
-  LDAO := TADRConnDAOUsuario.Create(LConn);
+  LDAO   := TADRConnDAOUsuario.Create(LConn);
   LDADOS := TJSONObject.ParseJSONValue(Req.Body);
   try
     LResult := LDAO.Login(Req.Body);
@@ -155,7 +155,7 @@ begin
     else
       Res
         .Send<TJSONObject>(LResult)
-        .Status(THTTPStatus.NotFound)
+        .Status(THTTPStatus.NotFound);
   finally
     LDao.Free;
   end;

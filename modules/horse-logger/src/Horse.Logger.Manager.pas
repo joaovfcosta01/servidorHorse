@@ -20,20 +20,21 @@ type
 
   THorseLoggerManager = class(THorseLoggerThread)
   private
+    { private declarations }
     class var FProviderList: TList<IHorseLoggerProvider>;
     class var FDefaultManager: THorseLoggerManager;
   protected
+    { protected declarations }
     procedure DispatchLogCache; override;
     class function GetProviderList: TList<IHorseLoggerProvider>;
-    class function ByteArrayToHexString(const AValue: TBytes; const ASeparator: string = ''): string;
-    class function ValidateValue(const AValue: Integer): THorseLoggerLogItemNumber; overload;
-    class function ValidateValue(const AValue: string): THorseLoggerLogItemString; overload;
-    class function ValidateValue(const AValue: TBytes; const ASeparator: string = ''): THorseLoggerLogItemString; overload;
-  	class function ValidateValue(const AValue: TDateTime; const AShort: Boolean): THorseLoggerLogItemString; overload;
+    class function ValidateValue(AValue: Integer): THorseLoggerLogItemNumber; overload;
+    class function ValidateValue(AValue: string): THorseLoggerLogItemString; overload;
+    class function ValidateValue(AValue: TDateTime): THorseLoggerLogItemString; overload;
     class function GetDefaultManager: THorseLoggerManager; static;
   public
+    { public declarations }
     class function HorseCallback: THorseCallback; overload;
-    class function RegisterProvider(const AProvider: IHorseLoggerProvider): THorseLoggerManagerClass;
+    class function RegisterProvider(AProvider: IHorseLoggerProvider): THorseLoggerManagerClass;
     class property DefaultManager: THorseLoggerManager read GetDefaultManager;
     class destructor UnInitialize;
   end;
@@ -65,8 +66,7 @@ begin
     LMilliSecondsBetween := MilliSecondsBetween(LAfterDateTime, LBeforeDateTime);
     LLog := THorseLoggerLog.Create;
     try
-      LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('time', THorseLoggerManager.ValidateValue(LBeforeDateTime, False));
-      LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('time_short', THorseLoggerManager.ValidateValue(LBeforeDateTime, True));
+      LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('time', THorseLoggerManager.ValidateValue(LBeforeDateTime));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('execution_time', THorseLoggerManager.ValidateValue(LMilliSecondsBetween.ToString));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_clientip', THorseLoggerManager.ValidateValue(ClientIP(AReq)));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_method', THorseLoggerManager.ValidateValue(AReq.RawWebRequest.Method));
@@ -90,7 +90,7 @@ begin
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_content_encoding', THorseLoggerManager.ValidateValue(AReq.RawWebRequest.ContentEncoding));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_content_type', THorseLoggerManager.ValidateValue(AReq.RawWebRequest.ContentType));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_content_length', THorseLoggerManager.ValidateValue(AReq.RawWebRequest.ContentLength.ToString));
-      LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_content', THorseLoggerManager.ValidateValue({$IF DEFINED(FPC)} TEncoding.ANSI.GetBytes({$ENDIF}AReq.RawWebRequest.{$IF DEFINED(FPC)}Content){$ELSE}RawContent{$ENDIF}, ''));
+      LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('request_content', THorseLoggerManager.ValidateValue(AReq.RawWebRequest.Content));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('response_server', THorseLoggerManager.ValidateValue(ARes.RawWebResponse.Server));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('response_allow', THorseLoggerManager.ValidateValue(ARes.RawWebResponse.Allow));
       LLog.{$IFDEF FPC}Add{$ELSE}AddPair{$ENDIF}('response_location', THorseLoggerManager.ValidateValue(ARes.RawWebResponse.Location));
@@ -114,15 +114,6 @@ begin
       THorseLoggerManager.GetDefaultManager.NewLog(LLog);
     end;
   end;
-end;
-
-class function THorseLoggerManager.ByteArrayToHexString(const AValue: TBytes; const ASeparator: string): string;
-var
-  LIndex: integer;
-begin
-  Result := '';
-  for LIndex := Low(AValue) to High(AValue) do
-    Result := Result + ASeparator + IntToHex(AValue[LIndex], 2);
 end;
 
 procedure THorseLoggerManager.DispatchLogCache;
@@ -166,7 +157,7 @@ begin
   Result := DefaultHorseCallback;
 end;
 
-class function THorseLoggerManager.RegisterProvider(const AProvider: IHorseLoggerProvider): THorseLoggerManagerClass;
+class function THorseLoggerManager.RegisterProvider(AProvider: IHorseLoggerProvider): THorseLoggerManagerClass;
 begin
   Result := THorseLoggerManager;
   GetProviderList.Add(AProvider);
@@ -187,27 +178,19 @@ begin
   end;
 end;
 
-class function THorseLoggerManager.ValidateValue(const AValue: TBytes; const ASeparator: string = ''): THorseLoggerLogItemString;
-begin
-  Result := THorseLoggerLogItemString.Create(ByteArrayToHexString(AValue, ASeparator));
-end;
-
-class function THorseLoggerManager.ValidateValue(const AValue: Integer): THorseLoggerLogItemNumber;
+class function THorseLoggerManager.ValidateValue(AValue: Integer): THorseLoggerLogItemNumber;
 begin
   Result := THorseLoggerLogItemNumber.Create(AValue);
 end;
 
-class function THorseLoggerManager.ValidateValue(const AValue: string): THorseLoggerLogItemString;
+class function THorseLoggerManager.ValidateValue(AValue: string): THorseLoggerLogItemString;
 begin
   Result := THorseLoggerLogItemString.Create(AValue);
 end;
 
-class function THorseLoggerManager.ValidateValue(const AValue: TDateTime; const AShort: Boolean): THorseLoggerLogItemString;
+class function THorseLoggerManager.ValidateValue(AValue: TDateTime): THorseLoggerLogItemString;
 begin
-  if AShort then
-  	Result := THorseLoggerLogItemString.Create(FormatDateTime('dd/mm/yyyy hh:mm:ss.zzz', AValue))
-  else
-    Result := THorseLoggerLogItemString.Create(FormatDateTime('dd/MMMM/yyyy hh:mm:ss.zzz', AValue));
+  Result := THorseLoggerLogItemString.Create(FormatDateTime('dd/MMMM/yyyy hh:mm:ss.zzz', AValue));
 end;
 
 end.

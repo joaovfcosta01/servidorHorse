@@ -8,116 +8,75 @@ uses
   Data.DB,
   System.Classes,
   System.SysUtils,
-  System.Variants,
-  System.Generics.Collections,
   FireDAC.Stan.Param,
   FireDAC.Comp.Client;
 
-type
-  TADRConnModelFiredacQuery = class(TInterfacedObject, IADRQuery)
+type TADRConnModelFiredacQuery = class(TInterfacedObject, IADRQuery)
+
   private
     [Weak]
     FConnection: IADRConnection;
     FDQuery: TFDQuery;
     FGenerator: IADRGenerator;
-    FBatchParams: TObjectList<TParams>;
     FParams: TParams;
     FSQL: TStrings;
 
-    function GetBatchParams(AIndex: Integer): TParams;
-    function AddParam(AName: string; AValue: Variant; AType: TFieldType;
-      ANullIfEmpty: Boolean = False): TParam; overload;
-    function AddParam(AParams: TParams; AName: string; AValue: Variant; AType: TFieldType;
-      ANullIfEmpty: Boolean = False): TParam; overload;
-    procedure ExecSQLDefault;
-    procedure ExecSQLBatch;
+    function AddParam(Name: string; Value: Variant; AType: TFieldType): TParam;
+
   protected
-    function SQL(AValue: string): IADRQuery; overload;
-    function SQL(AValue: string; const Args: array of const): IADRQuery; overload;
+    function SQL(Value: String): IADRQuery; overload;
+    function SQL(Value: string; const Args: array of const): IADRQuery; overload;
 
-    function Component: TComponent;
-    function DataSet: TDataSet;
-    function DataSource(AValue: TDataSource): IADRQuery;
+    function DataSource(Value: TDataSource): IADRQuery;
 
-    function ParamAsInteger(AName: string; AValue: Integer; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsCurrency(AName: string; AValue: Currency; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsFloat(AName: string; AValue: Double; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsString(AName: string; AValue: string; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsDateTime(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsDate(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsTime(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsBoolean(AName: string; AValue: Boolean; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-
-    function ArraySize(AValue: Integer): IADRQuery;
-    function ParamAsInteger(AIndex: Integer; AName: string; AValue: Integer; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsCurrency(AIndex: Integer; AName: string; AValue: Currency; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsFloat(AIndex: Integer; AName: string; AValue: Double; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsString(AIndex: Integer; AName: string; AValue: string; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsDateTime(AIndex: Integer; AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsDate(AIndex: Integer; AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsTime(AIndex: Integer; AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery; overload;
-    function ParamAsBoolean(AIndex: Integer; AName: string; AValue: Boolean; ANullIfEmpty: Boolean = False): IADRQuery; overload;
+    function ParamAsInteger(Name: String; Value: Integer): IADRQuery;
+    function ParamAsCurrency(Name: String; Value: Currency): IADRQuery;
+    function ParamAsFloat(Name: String; Value: Double): IADRQuery;
+    function ParamAsString(Name: String; Value: String): IADRQuery;
+    function ParamAsDateTime(Name: String; Value: TDateTime): IADRQuery;
+    function ParamAsDate(Name: String; Value: TDateTime): IADRQuery;
+    function ParamAsTime(Name: String; Value: TDateTime): IADRQuery;
+    function ParamAsBoolean(Name: String; Value: Boolean): IADRQuery;
 
     function OpenDataSet: TDataSet;
     function Open: IADRQuery;
     function ExecSQL: IADRQuery;
     function ExecSQLAndCommit: IADRQuery;
+
     function Generator: IADRGenerator;
   public
-    constructor Create(AConnection: IADRConnection);
+    constructor create(AConnection: IADRConnection);
     class function New(AConnection: IADRConnection): IADRQuery;
     destructor Destroy; override;
-  end;
+end;
 
 implementation
 
 { TADRConnModelFiredacQuery }
 
-function TADRConnModelFiredacQuery.AddParam(AName: string; AValue: Variant; AType: TFieldType;
-  ANullIfEmpty: Boolean = False): TParam;
+function TADRConnModelFiredacQuery.AddParam(Name: string; Value: Variant; AType: TFieldType): TParam;
 begin
-  Result := AddParam(FParams, AName, AValue, AType, ANullIfEmpty);
+  result := FParams.AddParameter;
+  result.Name := Name;
+  result.DataType := AType;
+  result.Value := Value;
+  result.ParamType := ptInput;
 end;
 
-function TADRConnModelFiredacQuery.AddParam(AParams: TParams; AName: string; AValue: Variant;
-  AType: TFieldType; ANullIfEmpty: Boolean): TParam;
-begin
-  Result := AParams.AddParameter;
-  Result.Name := AName;
-  Result.DataType := AType;
-  Result.ParamType := ptInput;
-  Result.Value := AValue;
-end;
-
-function TADRConnModelFiredacQuery.ArraySize(AValue: Integer): IADRQuery;
-begin
-  Result := Self;
-end;
-
-function TADRConnModelFiredacQuery.Component: TComponent;
-begin
-  Result := FDQuery;
-end;
-
-constructor TADRConnModelFiredacQuery.Create(AConnection: IADRConnection);
+constructor TADRConnModelFiredacQuery.create(AConnection: IADRConnection);
 begin
   FConnection := AConnection;
   FDQuery := TFDQuery.Create(nil);
-  FDQuery.Connection := TFDConnection(FConnection.Connection);
+  FDQuery.Connection := TFDConnection( FConnection.Connection );
   FSQL := TStringList.Create;
   FParams := TParams.Create(nil);
 end;
 
-function TADRConnModelFiredacQuery.DataSet: TDataSet;
+function TADRConnModelFiredacQuery.DataSource(Value: TDataSource): IADRQuery;
 begin
-  Result := FDQuery;
-end;
-
-function TADRConnModelFiredacQuery.DataSource(AValue: TDataSource): IADRQuery;
-begin
-  Result := Self;
-  if Assigned(AValue) then
-    AValue.DataSet := FDQuery;
+  result := Self;
+  if Assigned(Value) then
+    Value.DataSet := FDQuery;
 end;
 
 destructor TADRConnModelFiredacQuery.Destroy;
@@ -125,22 +84,33 @@ begin
   FDQuery.Free;
   FSQL.Free;
   FParams.Free;
-  FreeAndNil(FBatchParams);
   inherited;
 end;
 
 function TADRConnModelFiredacQuery.ExecSQL: IADRQuery;
+var
+  LQuery: TFDQuery;
+  i: Integer;
 begin
-  Result := Self;
-  if Assigned(FBatchParams) then
-    ExecSQLBatch
-  else
-    ExecSQLDefault;
+  result := Self;
+  LQuery := TFDQuery.Create(nil);
+  try
+    LQuery.Connection := TFDConnection(FConnection.Component);
+    LQuery.SQL.Text := FSQL.Text;
+    for i := 0 to Pred(FParams.Count) do
+      LQuery.ParamByName(FParams[i].Name).Value := FParams[i].Value;
+
+    LQuery.ExecSQL;
+  finally
+    FParams.Clear;
+    FSQL.Clear;
+    LQuery.Free;
+  end;
 end;
 
 function TADRConnModelFiredacQuery.ExecSQLAndCommit: IADRQuery;
 begin
-  Result := Self;
+  result := Self;
   try
     FConnection.StartTransaction;
     try
@@ -155,62 +125,6 @@ begin
   end;
 end;
 
-procedure TADRConnModelFiredacQuery.ExecSQLBatch;
-var
-  I, J: Integer;
-  LQuery: TFDQuery;
-  LParams: TParams;
-begin
-  LQuery := TFDQuery.Create(nil);
-  try
-    LQuery.Connection := TFDConnection(FConnection.Component);
-    LQuery.SQL.Text := FSQL.Text;
-    LQuery.Params.ArraySize := FBatchParams.Count;
-    for I := 0 to Pred(FBatchParams.Count) do
-    begin
-      LParams := FBatchParams.Items[I];
-      for J := 0 to Pred(LParams.Count) do
-      begin
-        if LParams[J].IsNull then
-        begin
-          LQuery.ParamByName(LParams[J].Name).DataType := LParams[J].DataType;
-          LQuery.ParamByName(LParams[J].Name).Clear(I);
-        end
-        else
-          LQuery.ParamByName(LParams[J].Name).Values[I] := LParams[J].Value;
-      end;
-    end;
-    LQuery.Execute(FBatchParams.Count, 0);
-  finally
-    FreeAndNil(FBatchParams);
-    FSQL.Clear;
-    LQuery.Free;
-  end;
-end;
-
-procedure TADRConnModelFiredacQuery.ExecSQLDefault;
-var
-  LQuery: TFDQuery;
-  I: Integer;
-begin
-  LQuery := TFDQuery.Create(nil);
-  try
-    LQuery.Connection := TFDConnection(FConnection.Component);
-    LQuery.SQL.Text := FSQL.Text;
-    for I := 0 to Pred(FParams.Count) do
-    begin
-      LQuery.ParamByName(FParams[I].Name).DataType := FParams[I].DataType;
-      LQuery.ParamByName(FParams[I].Name).Value := FParams[I].Value;
-    end;
-
-    LQuery.ExecSQL;
-  finally
-    FParams.Clear;
-    FSQL.Clear;
-    LQuery.Free;
-  end;
-end;
-
 function TADRConnModelFiredacQuery.Generator: IADRGenerator;
 begin
   if not Assigned(FGenerator) then
@@ -218,35 +132,24 @@ begin
   Result := FGenerator;
 end;
 
-function TADRConnModelFiredacQuery.GetBatchParams(AIndex: Integer): TParams;
-begin
-  if not Assigned(FBatchParams) then
-    FBatchParams := TObjectList<TParams>.Create;
-  if FBatchParams.Count <= AIndex then
-    FBatchParams.Add(TParams.Create);
-  Result := FBatchParams.Last;
-end;
-
 class function TADRConnModelFiredacQuery.New(AConnection: IADRConnection): IADRQuery;
 begin
-  Result := Self.Create(AConnection);
+  result := Self.create(AConnection);
 end;
 
 function TADRConnModelFiredacQuery.Open: IADRQuery;
 var
-  I: Integer;
+  i: Integer;
 begin
-  Result := Self;
+  result := Self;
   if FDQuery.Active then
     FDQuery.Close;
 
   FDQuery.SQL.Text := FSQL.Text;
   try
-    for I := 0 to Pred(FParams.Count) do
-    begin
-      FDQuery.ParamByName(FParams[I].Name).DataType := FParams[I].DataType;
-      FDQuery.ParamByName(FParams[I].Name).Value := FParams[I].Value;
-    end;
+    for i := 0 to Pred(FParams.Count) do
+      FDQuery.ParamByName(FParams[i].Name).Value := FParams[i].Value;
+
     FDQuery.Open;
   finally
     FSQL.Clear;
@@ -257,20 +160,19 @@ end;
 function TADRConnModelFiredacQuery.OpenDataSet: TDataSet;
 var
   LQuery : TFDQuery;
-  I: Integer;
+  i: Integer;
 begin
   try
     LQuery := TFDQuery.Create(nil);
     try
       LQuery.Connection := TFDConnection(FConnection.Component);
       LQuery.SQL.Text := FSQL.Text;
-      for I := 0 to Pred(FParams.Count) do
-      begin
-        LQuery.ParamByName(FParams[I].Name).DataType := FParams[I].DataType;
-        LQuery.ParamByName(FParams[I].Name).Value := FParams[I].Value;
-      end;
+      for i := 0 to Pred(FParams.Count) do
+        LQuery.ParamByName(FParams[i].Name).Value := FParams[i].Value;
+
       LQuery.Open;
-      Result := LQuery;
+
+      result := LQuery;
     except
       LQuery.Free;
       raise;
@@ -281,235 +183,64 @@ begin
   end;
 end;
 
-function TADRConnModelFiredacQuery.ParamAsBoolean(AName: string; AValue: Boolean; ANullIfEmpty: Boolean = False): IADRQuery;
+function TADRConnModelFiredacQuery.ParamAsBoolean(Name: String; Value: Boolean): IADRQuery;
 begin
   Result := Self;
-  AddParam(AName, AValue, ftBoolean, ANullIfEmpty);
+  AddParam(Name, Value, ftBoolean);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsCurrency(AName: string; AValue: Currency; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsCurrency(Name: String; Value: Currency): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftCurrency);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftCurrency;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftCurrency);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsDate(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsDate(Name: String; Value: TDateTime): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftDate, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftDate;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftDate);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsDateTime(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsDateTime(Name: String; Value: TDateTime): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftDateTime, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftDateTime;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftDateTime);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsFloat(AName: string; AValue: Double; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsFloat(Name: String; Value: Double): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftFloat, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftFloat;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftFloat);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsInteger(AName: string; AValue: Integer; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsInteger(Name: String; Value: Integer): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftInteger, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftInteger;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftInteger);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsString(AName: string; AValue: string; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsString(Name: String; Value: String): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftString, ANullIfEmpty);
-  if (AValue = EmptyStr) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftString;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftString);
 end;
 
-function TADRConnModelFiredacQuery.ParamAsTime(AName: string; AValue: TDateTime; ANullIfEmpty: Boolean = False): IADRQuery;
-var
-  LParam: TParam;
+function TADRConnModelFiredacQuery.ParamAsTime(Name: String; Value: TDateTime): IADRQuery;
 begin
   Result := Self;
-  LParam := AddParam(AName, AValue, ftTime, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftTime;
-    LParam.Value := Null;
-  end;
+  AddParam(Name, Value, ftTime);
 end;
 
-function TADRConnModelFiredacQuery.SQL(AValue: string): IADRQuery;
+function TADRConnModelFiredacQuery.SQL(Value: String): IADRQuery;
 begin
   Result := Self;
-  FSQL.Add(AValue);
+  FSQL.Add(Value);
 end;
 
-function TADRConnModelFiredacQuery.SQL(AValue: string; const Args: array of const): IADRQuery;
+function TADRConnModelFiredacQuery.SQL(Value: string; const Args: array of const): IADRQuery;
 begin
-  Result := Self;
-  SQL(Format(AValue, Args));
-end;
-
-function TADRConnModelFiredacQuery.ParamAsBoolean(AIndex: Integer; AName: string; AValue,
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  AddParam(LParams, AName, AValue, ftBoolean, ANullIfEmpty);
-end;
-
-function TADRConnModelFiredacQuery.ParamAsCurrency(AIndex: Integer; AName: string; AValue: Currency;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftCurrency, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftCurrency;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsDate(AIndex: Integer; AName: string; AValue: TDateTime;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftDate, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftDate;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsDateTime(AIndex: Integer; AName: string;
-  AValue: TDateTime; ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftDateTime, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftDateTime;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsFloat(AIndex: Integer; AName: string; AValue: Double;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftFloat, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftFloat;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsInteger(AIndex: Integer; AName: string; AValue: Integer;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftInteger, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftInteger;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsString(AIndex: Integer; AName, AValue: string;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftString, ANullIfEmpty);
-  if (AValue = EmptyStr) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftString;
-    LParam.Clear;
-  end
-end;
-
-function TADRConnModelFiredacQuery.ParamAsTime(AIndex: Integer; AName: string; AValue: TDateTime;
-  ANullIfEmpty: Boolean): IADRQuery;
-var
-  LParams: TParams;
-  LParam: TParam;
-begin
-  Result := Self;
-  LParams := GetBatchParams(AIndex);
-  LParam := AddParam(LParams, AName, AValue, ftTime, ANullIfEmpty);
-  if (AValue = 0) and (ANullIfEmpty) then
-  begin
-    LParam.DataType := ftTime;
-    LParam.Clear;
-  end
+  result := Self;
+  SQL(Format(Value, Args));
 end;
 
 end.

@@ -8,10 +8,16 @@ uses
   Classes, SysUtils, DaemonApp;
 
 type
+
+  { TDaemon_Main }
+
   TDaemon_Main = class(TDaemon)
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleShutDown(Sender: TCustomDaemon);
     procedure DataModuleStart(Sender: TCustomDaemon; var OK: Boolean);
+  private
+
+  public
   end;
 
 var
@@ -29,16 +35,17 @@ end;
 
 procedure RunHorse;
 begin
-  // Need to set "HORSE_DAEMON" compilation directive
   THorse.Listen(9000);
 end;
 
-procedure Ping(Req: THorseRequest; Res: THorseResponse);
+procedure Ping(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
 begin
   Res.Send('pong');
 end;
 
 {$R *.lfm}
+
+{ TDaemon_Main }
 
 procedure TDaemon_Main.DataModuleCreate(Sender: TObject);
 begin
@@ -57,5 +64,5 @@ end;
 
 initialization
   RegisterDaemon;
-
 end.
+

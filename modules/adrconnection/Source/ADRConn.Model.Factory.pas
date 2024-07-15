@@ -11,11 +11,12 @@ type
   TADRConnConfigIni = ADRConn.Config.IniFile.TADRConnConfigIni;
 
   TADRConnModelFactory = class
+
   public
-    class function GetConnectionIniFile(ASection: string = ''): IADRConnection;
+    class function GetConnectionIniFile(ASection: String = ''): IADRConnection;
     class function GetConnection: IADRConnection;
     class function GetQuery(AConnection: IADRConnection): IADRQuery;
-  end;
+end;
 
 implementation
 
@@ -23,32 +24,32 @@ implementation
 
 class function TADRConnModelFactory.GetConnection: IADRConnection;
 begin
-  Result := CreateConnection;
+  result := CreateConnection;
 end;
 
-class function TADRConnModelFactory.GetConnectionIniFile(ASection: string = ''): IADRConnection;
+class function TADRConnModelFactory.GetConnectionIniFile(ASection: String): IADRConnection;
 var
-  LIniConfig: TADRConnConfigIni;
+  iniConfig: TADRConnConfigIni;
 begin
-  LIniConfig := TADRConnConfigIni.GetInstance(ASection);
+  iniConfig := TADRConnConfigIni.GetInstance(ASection);
   Result := CreateConnection;
   Result.Params
-    .Driver(LIniConfig.Driver)
-    .Server(LIniConfig.Server)
-    .Database(LIniConfig.Database)
-    .UserName(LIniConfig.UserName)
-    .Password(LIniConfig.Password);
+    .Driver(iniConfig.Driver)
+    .Server(iniConfig.Server)
+    .Database(iniConfig.Database)
+    .UserName(iniConfig.UserName)
+    .Password(iniConfig.Password);
 
-  if LIniConfig.Port > 0 then
-    Result.Params.Port(LIniConfig.Port);
+  if iniConfig.Port > 0 then
+    Result.Params.Port(iniConfig.Port);
 
-  if not LIniConfig.VendorLib.IsEmpty then
-    Result.Params.Lib(LIniConfig.VendorLib);
+  if not iniConfig.VendorLib.IsEmpty then
+    Result.Params.Lib(iniConfig.VendorLib);
 end;
 
 class function TADRConnModelFactory.GetQuery(AConnection: IADRConnection): IADRQuery;
 begin
-  Result := CreateQuery(AConnection);
+  result := CreateQuery(AConnection);
 end;
 
 end.

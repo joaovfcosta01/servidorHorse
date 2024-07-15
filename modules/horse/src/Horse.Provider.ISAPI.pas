@@ -3,36 +3,34 @@ unit Horse.Provider.ISAPI;
 interface
 
 {$IF DEFINED(HORSE_ISAPI) AND NOT DEFINED(FPC)}
-uses
-  Horse.Provider.Abstract,
-  System.SysUtils,
-  Web.Win.ISAPIApp;
+
+uses Horse.Provider.Abstract, System.SysUtils, Web.Win.ISAPIApp;
 
 type
-  THorseProvider = class(THorseProviderAbstract)
+  THorseProvider<T: class> = class(THorseProviderAbstract<T>)
   private
     class procedure InternalListen; static;
   public
     class procedure Listen; overload; override;
-    class procedure Listen(const ACallback: TProc); reintroduce; overload; static;
+    class procedure Listen(ACallback: TProc<T>); reintroduce; overload; static;
   end;
+
 {$ENDIF}
 
 implementation
 
 {$IF DEFINED(HORSE_ISAPI) AND NOT DEFINED(FPC)}
-uses
-  Web.WebBroker,
-  System.Win.ComObj,
-  Winapi.ActiveX,
-  Horse.WebModule;
+
+uses Web.WebBroker, System.Win.ComObj, Winapi.ActiveX, Horse.WebModule;
 
 exports
   GetExtensionVersion,
   HttpExtensionProc,
   TerminateExtension;
 
-class procedure THorseProvider.InternalListen;
+{ THorseProvider<T> }
+
+class procedure THorseProvider<T>.InternalListen;
 begin
   CoInitFlags := COINIT_MULTITHREADED;
   Application.Initialize;
@@ -41,18 +39,19 @@ begin
   Application.Run;
 end;
 
-class procedure THorseProvider.Listen;
+class procedure THorseProvider<T>.Listen;
 begin
   inherited;
   InternalListen;
 end;
 
-class procedure THorseProvider.Listen(const ACallback: TProc);
+class procedure THorseProvider<T>.Listen(ACallback: TProc<T>);
 begin
   inherited;
   SetOnListen(ACallback);
   InternalListen;
 end;
+
 {$ENDIF}
 
 end.

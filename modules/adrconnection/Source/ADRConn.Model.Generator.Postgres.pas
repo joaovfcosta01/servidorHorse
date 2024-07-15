@@ -7,38 +7,40 @@ uses
   ADRConn.Model.Generator,
   System.SysUtils;
 
-type
-  TADRConnModelGeneratorPostgres = class(TADRConnModelGenerator, IADRGenerator)
+type TADRConnModelGeneratorPostgres = class(TADRConnModelGenerator, IADRGenerator)
+
   protected
-    function GetCurrentSequence(AName: string): Double; override;
-    function GetNextSequence(AName: string): Double; override;
+    function GetCurrentSequence(Name: String): Double; override;
+    function GetNextSequence(Name: String): Double; override;
+
   public
-    class function New(AQuery: IADRQuery): IADRGenerator;
-  end;
+    class function New(Query: IADRQuery): IADRGenerator;
+
+end;
 
 implementation
 
 { TADRConnModelGeneratorPostgres }
 
-function TADRConnModelGeneratorPostgres.GetCurrentSequence(AName: string): Double;
+function TADRConnModelGeneratorPostgres.GetCurrentSequence(Name: String): Double;
 begin
   FQuery
-    .SQL('SELECT CURRVAL(''%s'')', [AName]);
+    .SQL('SELECT CURRVAL(''%s'')', [Name]);
 
-  Result := GetSequence;
+  result := GetSequence;
 end;
 
-function TADRConnModelGeneratorPostgres.GetNextSequence(AName: string): Double;
+function TADRConnModelGeneratorPostgres.GetNextSequence(Name: String): Double;
 begin
   FQuery
-    .SQL('SELECT NEXTVAL(''%s'')', [AName, '1']);
+    .SQL('SELECT NEXTVAL(''%s'')', [Name, '1']);
 
-  Result := GetSequence;
+  result := GetSequence;
 end;
 
-class function TADRConnModelGeneratorPostgres.New(AQuery: IADRQuery): IADRGenerator;
+class function TADRConnModelGeneratorPostgres.New(Query: IADRQuery): IADRGenerator;
 begin
-  Result := Self.Create(AQuery);
+  result := Self.create(Query);
 end;
 
 end.

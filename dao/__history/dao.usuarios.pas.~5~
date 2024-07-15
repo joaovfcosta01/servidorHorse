@@ -1,0 +1,206 @@
+unit dao.usuarios;
+
+interface
+uses
+  Data.DB,
+  ADRConn.DAO.Base,
+  ADRConn.Model.Factory,
+  ADRCOnn.Model.Interfaces,
+
+  DataSet.Serialize,
+
+  System.Classes,
+  System.JSON,
+  System.StrUtils,
+  System.SysUtils;
+
+type
+  TADRConnDAOUsuario = class(TADRConnDAOBase)
+    private
+    public
+      function List(): TJSONArray;
+      function Find(AID: Integer): TJSONObject;
+      function Insert(AValue: string): TJSONObject;
+      function Update(AID: Integer; AValue: string): TJSONObject;
+      function Login(AValue: String): TJSONObject;
+  end;
+
+implementation
+
+{ TADRConnDAOComandas }
+
+function TADRConnDAOUsuario.List: TJSONArray;
+{$Region 'Select'}
+const
+  LSelect =
+    'SELECT                  ' +
+    '  *                     ' +
+    'FROM                    ' +
+    '  COMANDA              ' +
+    'ORDER BY                ' +
+    ' ID                     ';
+{$EndRegion}
+Var
+  Ldataset : Tdataset;
+begin
+  try
+    try
+      LDataset :=
+        FQuery
+          .SQL(LSelect)
+          .OpenDataSet;
+
+      Result := LDataset.ToJSONArray;
+    except
+      Result := TJSONArray.Create;
+    end;
+  finally
+    LDataSet.Free;
+  end;
+
+end;
+//------------------------------------------------------------------------------
+function TADRConnDAOUsuario.Login(AValue: String): TJSONObject;
+const
+  LSelect =
+    'SELECT ID, USUARIO, SENHA, TIPOUSUARIO FROM USUARIOS WHERE UPPER(USUARIO) = :pUSUARIO AND SENHA = :pSENHA';
+var
+  LDataSet: TDataSet;
+  LUsuario, LSenha: String;
+  LParams: TStringList;
+begin
+  Result := TJSONObject.Create; // Inicializa o resultado como um objeto vazio por padrão
+
+  LParams := TStringList.Create;
+  try
+    // Extrai os parâmetros da string 'usuario=JOAO&senha=1'
+    LParams.Delimiter := '&';
+    LParams.DelimitedText := AValue;
+
+    // Encontra os valores de 'usuario' e 'senha'
+    LUsuario := '';
+    LSenha := '';
+    if LParams.Count > 0 then
+    begin
+      LUsuario := Copy(LParams.Values['usuario'], 1, MaxInt);
+      LSenha := Copy(LParams.Values['senha'], 1, MaxInt);
+    end;
+
+    // Valida se os parâmetros foram encontrados na string
+    if (LUsuario = '') or (LSenha = '') then
+      Exit; // Sai sem realizar a consulta se os parâmetros não forem válidos
+
+    // Abre o dataset com a consulta parametrizada
+    LDataSet :=
+      FQuery
+        .SQL(LSelect)
+        .ParamAsString('pUSUARIO', UpperCase(LUsuario))
+        .ParamAsString('pSENHA', LSenha)
+        .OpenDataSet;
+
+    try
+      // Se encontrou algum resultado, converte para JSON e retorna
+      if not LDataSet.IsEmpty then
+        Result := LDataset.ToJSONObject;
+    finally
+      LDataSet.Free;
+    end;
+  finally
+    LParams.Free;
+  end;
+end;
+
+
+
+
+//------------------------------------------------------------------------------
+function TADRConnDAOUsuario.Find(AID: Integer): TJSONObject;
+{$Region 'SELECT'}
+const
+  LSelect =
+    'SELECT ID, USUARIO, SENHA, TIPOUSUARIO FROM USUARIOS WHERE ID = :pID ORDER BY ID';
+{$EndRegion}
+Var
+  Ldataset : Tdataset;
+begin
+  try
+    try
+      LDataset :=
+        FQuery
+          .SQL(LSelect)
+          .ParamAsInteger('pID', AID)
+          .OpenDataSet;
+
+      Result := LDataset.ToJSONObject;
+    except
+      Result := TJSONObject.Create;
+    end;
+  finally
+    LDataSet.Free;
+  end;
+end;
+//------------------------------------------------------------------------------
+function TADRConnDAOUsuario.Insert(AValue: string): TJSONObject;
+{$Region 'Select'}
+const
+  LSelect =
+    'SELECT                  ' +
+    '  *                     ' +
+    'FROM                    ' +
+    '  Usuario               ' +
+    'WHERE                   ' +
+    '  1=2                   ';
+{$EndRegion}
+Var
+  Ldataset : Tdataset;
+begin
+  try
+    try
+      LDataset :=
+        FQuery
+          .SQL(LSelect)
+          .OpenDataSet;
+
+        LDataSet
+          .LoadFromJSON(AValue);
+
+      Result := LDataset.ToJSONObject;
+    except
+      Result := TJSONObject.Create;
+    end;
+  finally
+    LDataSet.Free;
+  end;
+end;
+//------------------------------------------------------------------------------
+function TADRConnDAOUsuario.Update(AID: Integer; AValue: string): TJSONObject;
+{$Region 'SELECT'}
+const
+  LSelect =
+    'SELECT ID, USUARIO, SENHA, TIPOUSUARIO FROM USUARIOS WHERE ID = :pID'+
+    ' ORDER BY ID';
+{$EndRegion}
+Var
+  Ldataset : Tdataset;
+begin
+  try
+    try
+      LDataset :=
+        FQuery
+          .SQL(LSelect)
+          .ParamAsInteger('pID', AID)
+          .OpenDataSet;
+
+      LDataSet
+        .MergeFromJSONObject(AValue);
+
+      Result := LDataset.ToJSONObject;
+    except
+      Result := TJSONObject.Create;
+    end;
+  finally
+    LDataSet.Free;
+  end;
+end;
+
+end.

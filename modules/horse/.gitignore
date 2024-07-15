@@ -32,7 +32,6 @@ src/*.~*
 *.dsk
 *.dcu
 *.exe
-*.ico
 *.so
 *.~*
 *.a
@@ -45,10 +44,8 @@ src/*.~*
 #FPC/Laz
 lib/
 backup/
-*.lps
 
 # Code coverage reports
 **/console/
 **/vcl/
 dunitx-results.xml
-*.bak

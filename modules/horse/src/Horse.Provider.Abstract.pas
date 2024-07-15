@@ -8,67 +8,68 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  SysUtils,
-  Horse.Proc,
+  SysUtils, Horse.Proc,
 {$ELSE}
   System.SysUtils,
 {$ENDIF}
   Horse.Core;
 
 type
-  THorseProviderAbstract = class(THorseCore)
+  THorseProviderAbstract<T: class{$IF DEFINED(FPC)}, constructor{$ENDIF}> = class(THorseCore)
   private
-    class var FOnListen: TProc;
-    class var FOnStopListen: TProc;
-    class function GetOnStopListen: TProc; static;
+    class var FOnListen: TProc<T>;
+    class var FOnStopListen: TProc<T>;
+    class function GetOnStopListen: TProc<T>; static;
   protected
-    class function GetOnListen: TProc; static;
-    class procedure SetOnListen(const AValue: TProc); static;
-    class procedure SetOnStopListen(const AValue: TProc); static;
+    class function GetOnListen: TProc<T>; static;
+    class procedure SetOnListen(const Value: TProc<T>); static;
+    class procedure SetOnStopListen(const Value: TProc<T>); static;
     class procedure DoOnListen;
     class procedure DoOnStopListen;
   public
-    class property OnListen: TProc read GetOnListen write SetOnListen;
-    class property OnStopListen: TProc read GetOnStopListen write SetOnStopListen;
+    class property OnListen: TProc<T> read GetOnListen write SetOnListen;
+    class property OnStopListen: TProc<T> read GetOnStopListen write SetOnStopListen;
     class procedure Listen; virtual; abstract;
     class procedure StopListen; virtual;
   end;
 
 implementation
 
-class procedure THorseProviderAbstract.DoOnListen;
+{ THorseProviderAbstract }
+
+class procedure THorseProviderAbstract<T>.DoOnListen;
 begin
   if Assigned(FOnListen) then
-    FOnListen();
+    FOnListen({$IF DEFINED(FPC)}T(GetInstance){$ELSE}GetInstance{$ENDIF});
 end;
 
-class procedure THorseProviderAbstract.DoOnStopListen;
+class procedure THorseProviderAbstract<T>.DoOnStopListen;
 begin
   if Assigned(FOnStopListen) then
-    FOnStopListen();
+    FOnStopListen({$IF DEFINED(FPC)}T(GetInstance){$ELSE}GetInstance{$ENDIF});
 end;
 
-class function THorseProviderAbstract.GetOnListen: TProc;
+class function THorseProviderAbstract<T>.GetOnListen: TProc<T>;
 begin
   Result := FOnListen;
 end;
 
-class function THorseProviderAbstract.GetOnStopListen: TProc;
+class function THorseProviderAbstract<T>.GetOnStopListen: TProc<T>;
 begin
   Result := FOnStopListen;
 end;
 
-class procedure THorseProviderAbstract.SetOnListen(const AValue: TProc);
+class procedure THorseProviderAbstract<T>.SetOnListen(const Value: TProc<T>);
 begin
-  FOnListen := AValue;
+  FOnListen := Value;
 end;
 
-class procedure THorseProviderAbstract.SetOnStopListen(const AValue: TProc);
+class procedure THorseProviderAbstract<T>.SetOnStopListen(const Value: TProc<T>);
 begin
-  FOnStopListen := AValue;
+  FOnStopListen := Value;
 end;
 
-class procedure THorseProviderAbstract.StopListen;
+class procedure THorseProviderAbstract<T>.StopListen;
 begin
   raise Exception.Create('StopListen not implemented');
 end;

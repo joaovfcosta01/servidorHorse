@@ -1,4 +1,5 @@
 object HorseWebModule: THorseWebModule
+  OldCreateOrder = False
   Actions = <
     item
       Default = True

@@ -8,23 +8,13 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  SysUtils,
-  Classes,
-  DateUtils,
-  Generics.Collections,
+  SysUtils, Classes, DateUtils, Generics.Collections,
 {$ELSE}
-  System.SysUtils,
-  System.Classes,
-  System.DateUtils,
-  System.Generics.Collections,
+  System.SysUtils, System.Classes, System.DateUtils, System.Generics.Collections,
 {$ENDIF}
-  Horse.Exception,
-  Horse.Commons,
-  Horse.Core.Param.Field.Brackets,
-  Horse.Core.Param.Config;
+  Horse.Exception, Horse.Commons;
 
 type
-
   THorseCoreParamField = class
   private
     FContains: Boolean;
@@ -37,16 +27,11 @@ type
     FReturnUTC: Boolean;
     FTrueValue: string;
     FValue: string;
-    FStream: TStream;
-    FLhsBrackets: THorseCoreParamFieldLhsBrackets;
 
     function GetFormatSettings: TFormatSettings;
     procedure RaiseHorseException(const AMessage: string); overload;
     procedure RaiseHorseException(const AMessage: string; const Args: array of const); overload;
     function TryISO8601ToDate(const AValue: string; out Value: TDateTime): Boolean;
-
-    procedure InitializeLhsBrackets(const AParams: TDictionary<string, string>; const AFieldName: string);
-
   public
     function DateFormat(const AValue: string): THorseCoreParamField;
     function InvalidFormatMessage(const AValue: string): THorseCoreParamField;
@@ -56,7 +41,7 @@ type
     function ReturnUTC(const AValue: Boolean): THorseCoreParamField;
     function TimeFormat(const AValue: string): THorseCoreParamField;
     function TrueValue(const AValue: string): THorseCoreParamField;
-    procedure SaveToFile(const AFileName: String);
+
     function AsBoolean: Boolean;
     function AsCurrency: Currency;
     function AsDate: TDateTime;
@@ -66,23 +51,22 @@ type
     function AsInteger: Integer;
     function AsInt64: Int64;
     function AsISO8601DateTime: TDateTime;
-    function AsStream: TStream;
-    function AsString: string;
+    function Asstring: string;
     function AsTime: TTime;
-    property LhsBrackets:THorseCoreParamFieldLhsBrackets read FLhsBrackets;
-    constructor Create(const AParams: TDictionary<string, string>; const AFieldName: string); overload;
-    constructor Create(const AStream: TStream; const AFieldName: string); overload;
-    destructor Destroy; override;
+
+    constructor Create(const AParams: TDictionary<string, string>; const AFieldName: string);
   end;
 
 implementation
+
+{ THorseCoreParamField }
 
 function THorseCoreParamField.AsBoolean: Boolean;
 var
   LStrParam: string;
 begin
   Result := False;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   if LStrParam <> EmptyStr then
     Result := LowerCase(LStrParam) = LowerCase(FTrueValue);
 end;
@@ -98,12 +82,13 @@ var
   LFormat: TFormatSettings;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
-    if LStrParam = EmptyStr then
-      Exit;
-    LFormat := GetFormatSettings;
-    Result := StrToDate(Copy(LStrParam, 1, Length(FDateFormat)), LFormat);
+    if LStrParam <> EmptyStr then
+    begin
+      LFormat := GetFormatSettings;
+      Result := StrToDate(Copy(LStrParam, 1, Length(FDateFormat)), LFormat);
+    end;
   except
     on E: EConvertError do
       RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'date']);
@@ -116,12 +101,13 @@ var
   LFormat: TFormatSettings;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
-    if LStrParam = EmptyStr then
-      Exit;
-    LFormat := GetFormatSettings;
-    Result := StrToDateTime(LStrParam, LFormat);
+    if LStrParam <> EmptyStr then
+    begin
+      LFormat := GetFormatSettings;
+      Result := StrToDateTime(LStrParam, LFormat);
+    end;
   except
     on E: EConvertError do
       RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'datetime']);
@@ -138,12 +124,13 @@ var
   LStrParam: string;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
-    if LStrParam = EmptyStr then
-      Exit;
-    LStrParam := LStrParam.Replace(',', FormatSettings.DecimalSeparator).Replace('.', FormatSettings.DecimalSeparator);
-    Result := StrToFloat(LStrParam);
+    if LStrParam <> EmptyStr then
+    begin
+      LStrParam := LStrParam.Replace(',', FormatSettings.DecimalSeparator).Replace('.', FormatSettings.DecimalSeparator);
+      Result := StrToFloat(LStrParam);
+    end;
   except
     on E: EConvertError do
       RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'numeric']);
@@ -155,7 +142,7 @@ var
   LStrParam: string;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
     if LStrParam <> EmptyStr then
       Result := StrToInt64(LStrParam);
@@ -170,7 +157,7 @@ var
   LStrParam: string;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
     if LStrParam <> EmptyStr then
       Result := StrToInt(LStrParam);
@@ -185,32 +172,21 @@ var
   LStrParam: string;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
-  if LStrParam = EmptyStr then
-    Exit;
-  if not TryISO8601ToDate(LStrParam, Result) then
-    RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'ISO8601 date']);
-end;
-
-function THorseCoreParamField.AsStream: TStream;
-begin
-  Result := nil;
-  if FContains then
+  LStrParam := Asstring;
+  if LStrParam <> EmptyStr then
   begin
-    Result := FStream;
-    if Assigned(Result) then
-      Result.Position := 0;
-  end
-  else if FRequired then
-    RaiseHorseException(FRequiredMessage, [FFieldName]);
+    if not TryISO8601ToDate(LStrParam, Result) then
+      RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'ISO8601 date']);
+  end;
 end;
 
-function THorseCoreParamField.AsString: string;
+function THorseCoreParamField.Asstring: string;
 begin
   Result := EmptyStr;
   if FContains then
     Result := FValue
-  else if FRequired then
+  else
+  if FRequired then
     RaiseHorseException(FRequiredMessage, [FFieldName]);
 end;
 
@@ -220,25 +196,17 @@ var
   LFormat: TFormatSettings;
 begin
   Result := 0;
-  LStrParam := Trim(AsString);
+  LStrParam := Asstring;
   try
-    if LStrParam = EmptyStr then
-      Exit;
-    LFormat := GetFormatSettings;
-    Result := StrToTime(Copy(LStrParam, 1, Length(FTimeFormat)), LFormat);
+    if LStrParam <> EmptyStr then
+    begin
+      LFormat := GetFormatSettings;
+      Result := StrToTime(Copy(LStrParam, 1, Length(FTimeFormat)), LFormat);
+    end;
   except
     on E: EConvertError do
       RaiseHorseException(FInvalidFormatMessage, [FFieldName, LStrParam, 'time']);
   end;
-end;
-
-constructor THorseCoreParamField.Create(const AStream: TStream; const AFieldName: string);
-begin
-  FContains := True;
-  FFieldName := AFieldName;
-  FValue := EmptyStr;
-  FRequired := False;
-  FStream := AStream;
 end;
 
 constructor THorseCoreParamField.Create(const AParams: TDictionary<string, string>; const AFieldName: string);
@@ -261,14 +229,6 @@ begin
 
   if FContains then
     FValue := AParams.Items[LKey];
-
-  InitializeLhsBrackets(AParams, AFieldName);
-end;
-
-destructor THorseCoreParamField.Destroy;
-begin
-  FLhsBrackets.Free;
-  inherited Destroy;
 end;
 
 function THorseCoreParamField.DateFormat(const AValue: string): THorseCoreParamField;
@@ -288,24 +248,6 @@ begin
     Result.DateSeparator := '-';
   Result.ShortDateFormat := FDateFormat;
   Result.ShortTimeFormat := FTimeFormat;
-end;
-
-procedure THorseCoreParamField.InitializeLhsBrackets(const AParams: TDictionary<string, string>; const AFieldName: string);
-var
-  LLhsBracketType: TLhsBracketsType;
-begin
-  FLhsBrackets := THorseCoreParamFieldLhsBrackets.Create;
-  if THorseCoreParamConfig.GetInstance.CheckLhsBrackets then
-  begin
-    for LLhsBracketType := Low(TLhsBracketsType) to High(TLhsBracketsType) do
-    begin
-      if AParams.ContainsKey(FFieldName + LLhsBracketType.ToString) then
-      begin
-        FLhsBrackets.SetValue(LLhsBracketType, AParams.Items[FFieldName+LLhsBracketType.ToString]);
-        FLhsBrackets.Types := FLhsBrackets.Types + [LLhsBracketType];
-      end;
-    end;
-  end;
 end;
 
 function THorseCoreParamField.InvalidFormatMessage(const AValue: string): THorseCoreParamField;
@@ -350,23 +292,6 @@ function THorseCoreParamField.ReturnUTC(const AValue: Boolean): THorseCoreParamF
 begin
   Result := Self;
   FReturnUTC := AValue;
-end;
-
-procedure THorseCoreParamField.SaveToFile(const AFileName: String);
-var
-  LMemoryStream: TMemoryStream;
-begin
-  if AsStream = nil then
-    Exit;
-
-  LMemoryStream := TMemoryStream.Create;
-  try
-    LMemoryStream.LoadFromStream(AsStream);
-    LMemoryStream.Position := 0;
-    LMemoryStream.SaveToFile(AFileName);
-  finally
-    LMemoryStream.Free;
-  end;
 end;
 
 function THorseCoreParamField.TimeFormat(const AValue: string): THorseCoreParamField;

@@ -6,10 +6,8 @@ program CGI;
 uses Horse;
 
 begin
-  // Need to set "HORSE_CGI" compilation directive
-
   THorse.Get('/ping',
-    procedure(Req: THorseRequest; Res: THorseResponse)
+    procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
     begin
       Res.Send('pong');
     end);

@@ -7,11 +7,9 @@ unit Horse.Logger.Utils;
 interface
 
 type
-  StringArray = TArray<string>;
-
   THorseLoggerUtils = class
   public
-    class function GetFormatParams(AFormat: string): StringArray;
+    class function GetFormatParams(AFormat: string): TArray<string>;
   end;
 
 implementation
@@ -33,7 +31,7 @@ const
 {$IFDEF FPC}
 
 
-class function THorseLoggerUtils.GetFormatParams(AFormat: string): StringArray;
+class function THorseLoggerUtils.GetFormatParams(AFormat: string): TArray<string>;
 var
   LRegex: {$IFDEF FPC}TRegExpr{$ELSE}TRegEx{$ENDIF};
 begin
@@ -52,7 +50,7 @@ end;
 {$ELSE}
 
 
-class function THorseLoggerUtils.GetFormatParams(AFormat: string): StringArray;
+class function THorseLoggerUtils.GetFormatParams(AFormat: string): TArray<string>;
 var
   LRegex: TRegEx;
   LMatches: TMatchCollection;

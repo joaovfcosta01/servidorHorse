@@ -60,38 +60,98 @@ begin
 
 end;
 //------------------------------------------------------------------------------
-function TADRConnDAOUsuario.Login(AValue: String): TJSONObject;
+
+//function TADRConnDAOUsuario.Login(AValue: string): TJSONObject;
+//{$Region 'SELECT'}
+//const
+//  LSelect =
+//    'SELECT ID, USUARIO, SENHA, TIPOUSUARIO FROM USUARIOS WHERE UPPER(USUARIO) =:pUSUARIO AND SENHA =:pSENHA';
+//{$EndRegion}
+//var
+//  LDataSet : TDataSet;
+//  LUsuario : string;
+//  LSenha   : string;
+//  LJSON    : TJSONValue;
+//begin
+//  try
+//    try
+//      LJSON    := TJSONObject.ParseJSONValue(AValue) as TJSONValue;
+//      LUsuario := LJSON.GetValue<string>('usuario');
+//      LSenha   := LJSON.GetValue<string>('senha');
+//
+//      LDataSet :=
+//        FQuery
+//          .SQL(LSelect)
+//          .ParamAsString('pUSUARIO', UpperCase(LUsuario))
+//          .ParamAsString('pSENHA', LSenha)
+//          .OpenDataSet;
+//
+//      Result := LDataSet.ToJSONObject;
+//    except
+//      Result := TJSONObject.Create;
+//    end;
+//  finally
+//    LDataSet.Free;
+//  end;
+//end;
+function TADRConnDAOUsuario.Login(AValue: string): TJSONObject;
 {$Region 'SELECT'}
 const
   LSelect =
     'SELECT ID, USUARIO, SENHA, TIPOUSUARIO FROM USUARIOS WHERE UPPER(USUARIO) =:pUSUARIO AND SENHA =:pSENHA';
 {$EndRegion}
-Var
-  Ldataset : Tdataset;
-  LUsuario : String;
-  LSenha   : String;
-  LJSON    : TJSONValue;
+var
+  LDataSet: TDataSet;
+  LUsuario: string;
+  LSenha: string;
+  LParams: TStrings;
 begin
+  LDataSet := nil;
+  Result := TJSONObject.Create;
+
   try
+    LParams := TStringList.Create;
     try
-      LJSON    := TJSONObject.ParseJSONValue(AValue) as TJSONValue;
-      LUsuario := LJSON.GetValue<String>('usuario');
-      LSenha   := LJSON.GetValue<String>('senha');
-      LDataset :=
+      // Analisa a string de consulta para extrair os parâmetros
+      ExtractStrings(['&'], [], PChar(AValue), LParams);
+
+      // Extrai os valores dos parâmetros
+      LUsuario := LParams.Values['usuario'];
+      LSenha := LParams.Values['senha'];
+
+      if (LUsuario = '') or (LSenha = '') then
+        raise Exception.Create('Usuário ou senha não fornecidos');
+
+      LDataSet :=
         FQuery
           .SQL(LSelect)
-          .ParamAsString('pUsuario', UpperCase(LUsuario))
-          .ParamAsString('pSenha', LSenha)
+          .ParamAsString('pUSUARIO', UpperCase(LUsuario))
+          .ParamAsString('pSENHA', LSenha)
           .OpenDataSet;
 
-      Result := LDataset.ToJSONObject;
-    except
-      Result := TJSONObject.Create;
+      if not LDataSet.IsEmpty then
+        Result := LDataSet.ToJSONObject
+      else
+        raise Exception.Create('Usuário ou senha inválidos');
+    finally
+      LParams.Free;
     end;
-  finally
-    LDataSet.Free;
+  except
+    on E: Exception do
+    begin
+      Result := TJSONObject.Create;
+      Result.AddPair('error', E.Message);
+    end;
   end;
+
+  if Assigned(LDataSet) then
+    LDataSet.Free;
 end;
+
+
+
+
+
 
 //------------------------------------------------------------------------------
 function TADRConnDAOUsuario.Find(AID: Integer): TJSONObject;

@@ -8,16 +8,11 @@ interface
 
 uses
 {$IF DEFINED(FPC)}
-  SysUtils,
-  base64,
-  Classes,
+  SysUtils, StrUtils, base64, Classes,
 {$ELSE}
-  System.SysUtils,
-  System.NetEncoding,
-  System.Classes,
+  System.SysUtils, System.NetEncoding, System.Classes, System.StrUtils,
 {$ENDIF}
-  Horse,
-  Horse.Commons;
+  Horse, Horse.Commons;
 
 const
   AUTHORIZATION = 'Authorization';
@@ -31,7 +26,6 @@ type
     function RealmMessage(const AValue: string): IHorseBasicAuthenticationConfig; overload;
     function RealmMessage: string; overload;
     function SkipRoutes(const AValues: TArray<string>): IHorseBasicAuthenticationConfig; overload;
-    function SkipRoutes(const AValue: string): IHorseBasicAuthenticationConfig; overload;
     function SkipRoutes: TArray<string>; overload;
   end;
 
@@ -45,7 +39,6 @@ type
     function RealmMessage(const AValue: string): IHorseBasicAuthenticationConfig; overload;
     function RealmMessage: string; overload;
     function SkipRoutes(const AValues: TArray<string>): IHorseBasicAuthenticationConfig; overload;
-    function SkipRoutes(const AValue: string): IHorseBasicAuthenticationConfig; overload;
     function SkipRoutes: TArray<string>; overload;
   public
     constructor Create;
@@ -90,16 +83,13 @@ begin
   LPathInfo := Req.RawWebRequest.PathInfo;
   if LPathInfo = EmptyStr then
     LPathInfo := '/';
-  if MatchRoute(LPathInfo, Config.SkipRoutes) then
+  if MatchText(LPathInfo, Config.SkipRoutes) then
   begin
     Next();
     Exit;
   end;
 
   LBasicAuthenticationEncode := Req.Headers[Config.Header];
-  
-  //* 03-01-2023 - the authentication Header under Apache Module must be readed from "RawWebRequest" .....
-  if LBasicAuthenticationEncode.Trim.IsEmpty then LBasicAuthenticationEncode := Req.RawWebRequest.GetFieldByName(Config.Header);  
 
   if LBasicAuthenticationEncode.Trim.IsEmpty and not Req.Query.TryGetValue(Config.Header, LBasicAuthenticationEncode) then
   begin
@@ -109,11 +99,12 @@ begin
 {$ELSE}
       .Realm := Config.RealmMessage;
 {$ENDIF}
+
     raise EHorseCallbackInterrupted.Create;
   end;
 
   if not LBasicAuthenticationEncode.Trim.ToLower.StartsWith(BASIC_AUTH) then
-  begin
+  begin 
     Res.Send('Invalid authorization type').Status(THTTPStatus.Unauthorized);
     raise EHorseCallbackInterrupted.Create;
   end;
@@ -181,11 +172,6 @@ end;
 function THorseBasicAuthenticationConfig.RealmMessage: string;
 begin
   Result := FRealmMessage;
-end;
-
-function THorseBasicAuthenticationConfig.SkipRoutes(const AValue: string): IHorseBasicAuthenticationConfig;
-begin
-  Result := SkipRoutes([AValue]);
 end;
 
 function THorseBasicAuthenticationConfig.SkipRoutes(const AValues: TArray<string>): IHorseBasicAuthenticationConfig;

@@ -3,14 +3,11 @@ program basic;
 {$mode objfpc}{$H+}
 
 uses
-  {$IFDEF UNIX}
+  {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
-  {$ENDIF}
-  {$IFDEF HASAMIGA}
-  athreads,
-  {$ENDIF}
+  {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, dataset.serialize.samples.basic
+  Forms, memdslaz, DataSet.Serialize.Samples.Basic
   { you can add units after this };
 
 {$R *.res}

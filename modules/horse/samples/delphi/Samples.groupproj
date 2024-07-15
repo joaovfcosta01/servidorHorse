@@ -24,9 +24,6 @@
         <Projects Include="apache\Apache.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="vcl-ssl\VCL_SSL.dproj">
-            <Dependencies/>
-        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -98,23 +95,14 @@
     <Target Name="Apache:Make">
         <MSBuild Projects="apache\Apache.dproj" Targets="Make"/>
     </Target>
-    <Target Name="VCL_SSL">
-        <MSBuild Projects="vcl-ssl\VCL_SSL.dproj"/>
-    </Target>
-    <Target Name="VCL_SSL:Clean">
-        <MSBuild Projects="vcl-ssl\VCL_SSL.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="VCL_SSL:Make">
-        <MSBuild Projects="vcl-ssl\VCL_SSL.dproj" Targets="Make"/>
-    </Target>
     <Target Name="Build">
-        <CallTarget Targets="VCL;Console;ISAPI;WinSvc;Daemon;CGI;Apache;VCL_SSL"/>
+        <CallTarget Targets="VCL;Console;ISAPI;WinSvc;Daemon;CGI;Apache"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="VCL:Clean;Console:Clean;ISAPI:Clean;WinSvc:Clean;Daemon:Clean;CGI:Clean;Apache:Clean;VCL_SSL:Clean"/>
+        <CallTarget Targets="VCL:Clean;Console:Clean;ISAPI:Clean;WinSvc:Clean;Daemon:Clean;CGI:Clean;Apache:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="VCL:Make;Console:Make;ISAPI:Make;WinSvc:Make;Daemon:Make;CGI:Make;Apache:Make;VCL_SSL:Make"/>
+        <CallTarget Targets="VCL:Make;Console:Make;ISAPI:Make;WinSvc:Make;Daemon:Make;CGI:Make;Apache:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

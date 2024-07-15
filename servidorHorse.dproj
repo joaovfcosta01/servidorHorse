@@ -69,6 +69,12 @@
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
+    <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Cfg_2)'=='true') or '$(Cfg_2_Win32)'!=''">
+        <Cfg_2_Win32>true</Cfg_2_Win32>
+        <CfgParent>Cfg_2</CfgParent>
+        <Cfg_2>true</Cfg_2>
+        <Base>true</Base>
+    </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
         <DCC_DcuOutput>.\$(Platform)\$(Config)</DCC_DcuOutput>
         <DCC_ExeOutput>.\$(Platform)\$(Config)</DCC_ExeOutput>
@@ -79,7 +85,10 @@
         <DCC_K>false</DCC_K>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;$(DCC_Namespace)</DCC_Namespace>
         <SanitizedProjectName>servidorHorse</SanitizedProjectName>
-        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;modules\.dcp;modules\.dcu;modules;modules\adrconnection\Source;modules\dataset-serialize\src;modules\delphi-jose-jwt\Source\Common;modules\delphi-jose-jwt\Source\JOSE;modules\delphi-jose-jwt\Source;modules\handle-exception\src;modules\hashlib4pascal\HashLib\src\Base;modules\hashlib4pascal\HashLib\src\Checksum;modules\hashlib4pascal\HashLib\src\Crypto\Blake2BParams;modules\hashlib4pascal\HashLib\src\Crypto\Blake2SParams;modules\hashlib4pascal\HashLib\src\Crypto;modules\hashlib4pascal\HashLib\src\Hash128;modules\hashlib4pascal\HashLib\src\Hash32;modules\hashlib4pascal\HashLib\src\Hash64;modules\hashlib4pascal\HashLib\src\Include;modules\hashlib4pascal\HashLib\src\Interfaces;modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2BParams;modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2SParams;modules\hashlib4pascal\HashLib\src\KDF;modules\hashlib4pascal\HashLib\src\NullDigest;modules\hashlib4pascal\HashLib\src\Nullable;modules\hashlib4pascal\HashLib\src\Packages\FPC;modules\hashlib4pascal\HashLib\src\Utils;modules\hashlib4pascal\HashLib.Benchmark\src\Core;modules\hashlib4pascal\HashLib.Benchmark\src\Forms\FMX;modules\hashlib4pascal\HashLib.Tests\src;modules\horse\src;modules\horse-basic-auth\src;modules\horse-compression\src;modules\horse-cors\src;modules\horse-jwt\src;modules\horse-logger\src;modules\horse-logger-provider-console\src;modules\horse-logger-provider-logfile\src;modules\horse-octet-stream\src;modules\horse-utils-clientip\src;modules\jhonson\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\modules\.dcp;..\modules\.dcu;..\modules;modules\.dcp;modules\.dcu;modules;modules\adrconnection\Source;..\modules\adrconnection\Source;modules\dataset-serialize\src;..\modules\dataset-serialize\src;modules\delphi-jose-jwt\Source\Common;..\modules\delphi-jose-jwt\Source\Common;modules\delphi-jose-jwt\Source\JOSE;..\modules\delphi-jose-jwt\Source\JOSE;modules\delphi-jose-jwt\Source;..\modules\delphi-jose-jwt\Source;modules\gbswagger\Source\Core;..\modules\gbswagger\Source\Core;modules\gbswagger\Source\Datasnap;..\modules\gbswagger\Source\Datasnap;modules\gbswagger\Source\Horse;..\modules\gbswagger\Source\Horse;modules\gbswagger\Source\Validator;..\modules\gbswagger\Source\Validator;modules\handle-exception\src;..\modules\handle-exception\src;modules\hashlib4pascal\HashLib\src\Base;..\modules\hashlib4pascal\HashLib\src\Base;modules\hashlib4pascal\HashLib\src\Checksum;..\modules\hashlib4pascal\HashLib\src\Checksum;modules\hashlib4pascal\HashLib\src\Crypto\Blake2BParams;..\modules\hashlib4pascal\HashLib\src\Crypto\Blake2BParams;modules\hashlib4pascal\HashLib\src\Crypto\Blake2SParams;..\modules\hashlib4pascal\HashLib\src\Crypto\Blake2SParams;modules\hashlib4pascal\HashLib\src\Crypto;..\modules\hashlib4pascal\HashLib\src\Crypto;modules\hashlib4pascal\HashLib\src\Hash128;..\modules\hashlib4pascal\HashLib\src\Hash128;modules\hashlib4pascal\HashLib\src\Hash32;..\modules\hashlib4pascal\HashLib\src\Hash32;modules\hashlib4pascal\HashLib\src\Hash64;..\modules\hashlib4pascal\HashLib\src\Hash64;modules\hashlib4pascal\HashLib\src\Include;..\modules\hashlib4pascal\HashLib\src\Include;modules\hashlib4pascal\HashLib\src\Interfaces;..\modules\hashlib4pascal\HashLib\src\Interfaces;modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2BParams;..\modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2BParams;modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2SParams;..\modules\hashlib4pascal\HashLib\src\Interfaces\IBlake2SParams;modules\hashlib4pascal\HashLib\src\KDF;..\modules\hashlib4pascal\HashLib\src\KDF;modules\hashlib4pascal\HashLib\src\NullDigest;..\modules\hashlib4pascal\HashLib\src\NullDigest;modules\hashlib4pascal\HashLib\src\Nullable;..\modules\hashlib4pascal\HashLib\src\Nullable;modules\hashlib4pascal\HashLib\src\Packages\FPC;..\modules\hashlib4pascal\HashLib\src\Packages\FPC;modules\hashlib4pascal\HashLib\src\Utils;..\modules\hashlib4pascal\HashLib\src\Utils;modules\hashlib4pascal\HashLib.Benchmark\src\Core;..\modules\hashlib4pascal\HashLib.Benchmark\src\Core;modules\hashlib4pascal\HashLib.Benchmark\src\Forms\FMX;..\modules\hashlib4pascal\HashLib.Benchmark\src\Forms\FMX;modules\hashlib4pascal\HashLib.Tests\src;..\modules\hashlib4pascal\HashLib.Tests\src;modules\horse\src;..\modules\horse\src;modules\horse-basic-auth\src;..\modules\horse-basic-auth\src;modules\horse-compression\src;..\modules\horse-compression\src;modules\horse-logger\src;..\modules\horse-logger\src;modules\horse-logger-provider-console\src;..\modules\horse-logger-provider-console\src;modules\horse-logger-provider-logfile\src;..\modules\horse-logger-provider-logfile\src;modules\horse-octet-stream\src;..\modules\horse-octet-stream\src;modules\horse-paginate\src;..\modules\horse-paginate\src;modules\horse-utils-clientip\src;..\modules\horse-utils-clientip\src;modules\jhonson\src;..\modules\jhonson\src;modules\restrequest4delphi\src;..\modules\restrequest4delphi\src;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_Define>--c;$(DCC_Define)</DCC_Define>
+        <VerInfo_Locale>1046</VerInfo_Locale>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Android)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;RESTComponents;DBXInterBaseDriver;emsclientfiredac;tethering;DataSnapFireDAC;bindcompfmx;FmxTeeUI;fmx;FireDACIBDriver;FireDACDBXDriver;dbexpress;IndyCore;dsnap;emsclient;DataSnapCommon;FireDACCommon;RESTBackendComponents;soapserver;bindengine;CloudService;FireDACCommonDriver;DataSnapClient;inet;IndyIPCommon;bindcompdbx;IndyIPServer;IndySystem;fmxFireDAC;FireDAC;FireDACSqliteDriver;FMXTee;soaprtl;DbxCommonDriver;xmlrtl;soapmidas;DataSnapNativeClient;FireDACDSDriver;rtl;DbxClientDriver;CustomIPTransport;bindcomp;IndyIPClient;dbxcds;dsnapxml;DataSnapProviderClient;dbrtl;IndyProtocols;$(DCC_UsePackage)</DCC_UsePackage>
@@ -141,6 +150,7 @@
         <DCC_ConsoleTarget>true</DCC_ConsoleTarget>
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
+        <Manifest_File>(None)</Manifest_File>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_UsePackage>DBXSqliteDriver;RESTComponents;fmxase;DBXDb2Driver;DBXInterBaseDriver;vclactnband;vclFireDAC;bindcompvclsmp;emsclientfiredac;tethering;DataSnapFireDAC;FireDACADSDriver;DBXMSSQLDriver;DatasnapConnectorsFreePascal;FireDACMSSQLDriver;vcltouch;vcldb;bindcompfmx;DBXOracleDriver;inetdb;FmxTeeUI;emsedge;fmx;FireDACIBDriver;fmxdae;vcledge;FireDACDBXDriver;dbexpress;IndyCore;vclx;dsnap;emsclient;DataSnapCommon;FireDACCommon;RESTBackendComponents;DataSnapConnectors;VCLRESTComponents;soapserver;vclie;bindengine;DBXMySQLDriver;CloudService;FireDACOracleDriver;FireDACMySQLDriver;DBXFirebirdDriver;FireDACCommonODBC;FireDACCommonDriver;DataSnapClient;inet;IndyIPCommon;bindcompdbx;vcl;IndyIPServer;DBXSybaseASEDriver;IndySystem;FireDACDb2Driver;bindcompvclwinx;dsnapcon;FireDACMSAccDriver;fmxFireDAC;FireDACInfxDriver;vclimg;TeeDB;FireDAC;emshosting;FireDACSqliteDriver;FireDACPgDriver;FireDACASADriver;DBXOdbcDriver;FireDACTDataDriver;FMXTee;soaprtl;DbxCommonDriver;Tee;DataSnapServer;xmlrtl;soapmidas;DataSnapNativeClient;fmxobj;vclwinx;FireDACDSDriver;rtl;emsserverresource;DbxClientDriver;DBXSybaseASADriver;CustomIPTransport;vcldsnap;bindcomp;appanalytics;DBXInformixDriver;IndyIPClient;bindcompvcl;TeeUI;dbxcds;VclSmp;adortl;FireDACODBCDriver;DataSnapIndy10ServerTransport;dsnapxml;DataSnapProviderClient;dbrtl;IndyProtocols;inetdbxpress;FireDACMongoDBDriver;DataSnapServerMidas;$(DCC_UsePackage)</DCC_UsePackage>
@@ -161,7 +171,6 @@
         <DCC_ExeOutput>C:\Servidor_Horse\</DCC_ExeOutput>
         <DCC_DcuOutput>C:\Servidor_Horse\dcu\</DCC_DcuOutput>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <Manifest_File>(None)</Manifest_File>
         <Debugger_RunParams>--f</Debugger_RunParams>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
@@ -170,22 +179,26 @@
         <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
         <DCC_DebugInformation>0</DCC_DebugInformation>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Cfg_2_Win32)'!=''">
+        <VerInfo_Locale>1033</VerInfo_Locale>
+        <DCC_Define>--file;$(DCC_Define)</DCC_Define>
+    </PropertyGroup>
     <ItemGroup>
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
         <DCCReference Include="controllers\controllers.mesas.pas"/>
         <DCCReference Include="dao\dao.mesas.pas"/>
-        <DCCReference Include="controllers\controllers.cores.pas"/>
-        <DCCReference Include="dao\dao.cores.pas"/>
-        <DCCReference Include="dao\dao.comandas.pas"/>
-        <DCCReference Include="controllers\controllers.comandas.pas"/>
-        <DCCReference Include="controllers\controllers.usuarios.pas"/>
         <DCCReference Include="dao\dao.usuarios.pas"/>
-        <DCCReference Include="dao\dao.produtos.pas"/>
+        <DCCReference Include="controllers\controllers.usuarios.pas"/>
+        <DCCReference Include="controllers\controllers.comandas.pas"/>
+        <DCCReference Include="dao\dao.comandas.pas"/>
         <DCCReference Include="controllers\controllers.produtos.pas"/>
+        <DCCReference Include="dao\dao.produtos.pas"/>
         <DCCReference Include="controllers\controllers.pedidos.pas"/>
         <DCCReference Include="dao\dao.pedidos.pas"/>
+        <DCCReference Include="controllers\controllers.cores.pas"/>
+        <DCCReference Include="dao\dao.cores.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

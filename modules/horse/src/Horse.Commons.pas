@@ -7,19 +7,16 @@ unit Horse.Commons;
 
 interface
 
-uses
 {$IF DEFINED(FPC)}
-  Classes,
-  SysUtils,
-  StrUtils,
-  RegExpr;
-{$ELSE}
-  System.Classes,
-  System.SysUtils,
-  System.RegularExpressions;
+uses Classes, SysUtils;
 {$ENDIF}
 
 type
+  TSession = class
+  end;
+
+  TSessionClass = class of TSession;
+
 {$IF DEFINED(FPC)}
   TMethodType = (mtAny, mtGet, mtPut, mtPost, mtHead, mtDelete, mtPatch);
 {$ENDIF}
@@ -106,15 +103,10 @@ type
     TextHTML,
     ImageJPEG,
     ImagePNG,
-    ImageGIF,
-    Download);
+    ImageGIF);
 
   TMessageType = (Default, Error, Warning, Information);
-  TLhsBracketsType = (Equal, NotEqual, LessThan, LessThanOrEqual, GreaterThan, GreaterThanOrEqual, Range, Like,
-    Contains, StartsWith, EndsWith);
 {$SCOPEDENUMS OFF}
-
-  TLhsBrackets = set of TLhsBracketsType;
 
   THTTPStatusHelper = {$IF DEFINED(FPC)} type {$ELSE} record {$ENDIF} helper for THTTPStatus
     function ToInteger: Integer;
@@ -125,123 +117,31 @@ type
     function ToString: string;
   end;
 
-  TLhsBracketsTypeHelper = {$IF DEFINED(FPC)} type {$ELSE} record {$ENDIF} helper for TLhsBracketsType
-    function ToString: string;
-  end;
-
 {$IF DEFINED(FPC)}
-function StringCommandToMethodType(const ACommand: string): TMethodType;
+function StringCommandToMethodType(ACommand: string): TMethodType;
 {$ENDIF}
-
-function MatchRoute(const AText: string; const AValues: array of string): Boolean;
 
 implementation
 
 {$IF DEFINED(FPC)}
-function StringCommandToMethodType(const ACommand: string): TMethodType;
+function StringCommandToMethodType(ACommand: string): TMethodType;
 begin
-  Result := TMethodType.mtAny;
-  case AnsiIndexText(ACommand, ['DELETE', 'GET', 'HEAD', 'PATCH', 'POST', 'PUT']) of
-    0:
-      Result := TMethodType.mtDelete;
-    1:
-      Result := TMethodType.mtGet;
-    2:
-      Result := TMethodType.mtHead;
-    3:
-      Result := TMethodType.mtPatch;
-    4:
-      Result := TMethodType.mtPost;
-    5:
-      Result := TMethodType.mtPut;
-  end;
+  if ACommand = 'ANY' then
+    Result := TMethodType.mtAny;
+  if ACommand = 'DELETE' then
+    Result := TMethodType.mtDelete;
+  if ACommand = 'GET' then
+    Result := TMethodType.mtGet;
+  if ACommand = 'HEAD' then
+    Result := TMethodType.mtHead;
+  if ACommand = 'PATCH' then
+    Result := TMethodType.mtPatch;
+  if ACommand = 'POST' then
+    Result := TMethodType.mtPost;
+  if ACommand = 'PUT' then
+    Result := TMethodType.mtPut;
 end;
 {$ENDIF}
-
-function MatchRoute(const AText: string; const AValues: array of string): Boolean;
-
-  function ReplaceParams(const AValue: string): string;
-  var
-    LPart: string;
-    LSplitedPath: TArray<string>;
-  begin
-    Result := AValue;
-    LSplitedPath := AValue.Split(['/']);
-    for LPart in LSplitedPath do
-    begin
-      if LPart.StartsWith(':') then
-        Result := StringReplace(Result, LPart, '([^/]*)', []);
-    end;
-    Result := Trim(Result);
-    if not(Result.EndsWith('/')) then
-      Result := Result + '/';
-  end;
-
-var
-{$IF DEFINED(FPC)}
-  LRegexObj: TRegExpr;
-{$ENDIF}
-  I: Integer;
-  LText, LExpression: string;
-begin
-  Result := False;
-{$IF DEFINED(FPC)}
-  LRegexObj := TRegExpr.Create;
-  try
-{$ENDIF}
-    LText := Trim(AText);
-    if not(LText.EndsWith('/')) then
-      LText := LText + '/';
-    for I := Low(AValues) to High(AValues) do
-    begin
-      LExpression := '^(' + ReplaceParams(AValues[I]) + ')$';
-{$IF DEFINED(FPC)}
-      LRegexObj.Expression := LExpression;
-      if LRegexObj.Exec(LText) then
-{$ELSE}
-      if TRegEx.IsMatch(LText, LExpression) then
-{$ENDIF}
-      begin
-        Result := True;
-        Exit;
-      end;
-    end;
-{$IF DEFINED(FPC)}
-  finally
-    LRegexObj.Free;
-  end;
-{$ENDIF}
-end;
-
-{ TLhsBracketsTypeHelper }
-
-function TLhsBracketsTypeHelper.ToString: string;
-begin
-  case Self of
-    TLhsBracketsType.Equal:
-      Result := '[eq]';
-    TLhsBracketsType.NotEqual:
-      Result := '[ne]';
-    TLhsBracketsType.LessThan:
-      Result := '[lt]';
-    TLhsBracketsType.LessThanOrEqual:
-      Result := '[lte]';
-    TLhsBracketsType.GreaterThan:
-      Result := '[gt]';
-    TLhsBracketsType.GreaterThanOrEqual:
-      Result := '[gte]';
-    TLhsBracketsType.Range:
-      Result := '[range]';
-    TLhsBracketsType.Like:
-      Result := '[like]';
-    TLhsBracketsType.Contains:
-      Result := '[contains]';
-    TLhsBracketsType.StartsWith:
-      Result := '[startsWith]';
-    TLhsBracketsType.EndsWith:
-      Result := '[endsWith]';
-  end;
-end;
 
 { THTTPStatusHelper }
 
@@ -287,8 +187,6 @@ begin
       Result := 'image/png';
     TMimeTypes.ImageGIF:
       Result := 'image/gif';
-    TMimeTypes.Download:
-      Result := 'application/x-download';
   end;
 end;
 

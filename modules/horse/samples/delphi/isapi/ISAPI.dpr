@@ -5,10 +5,8 @@ library ISAPI;
 uses Horse;
 
 begin
-  // Need to set "HORSE_ISAPI" compilation directive
-
   THorse.Get('/ping',
-    procedure(Req: THorseRequest; Res: THorseResponse)
+    procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
     begin
       Res.Send('pong');
     end);

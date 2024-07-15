@@ -3,15 +3,11 @@ dist/
 static/
 **/Win32/
 **/Win64/
-**/backup/
-**/lib/
 **/Linux64/
 **/__history/
 **/__recovery/
 src/*.~*
 *.res
-*.skincfg
-*.lps
 *.exe
 *.dll
 *.bpl

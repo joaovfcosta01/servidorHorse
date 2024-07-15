@@ -11,15 +11,6 @@ uses
   Classes,
 {$ELSE}
   System.Classes,
-  {$IFDEF LINUX}
-    {$DEFINE USE_PATH_MAX}
-  {$ELSE}
-    Winapi.Windows,
-  {$ENDIF}
-
-  {$IFDEF USE_PATH_MAX}
-    {$DEFINE MAX_PATH := Posix.Unistd.PATH_MAX}
-  {$ENDIF}
 {$ENDIF}
   Horse.Logger;
 
@@ -28,15 +19,12 @@ type
   private
     FLogFormat: string;
     FDir: string;
-    FLogName: string;
   public
     constructor Create;
     function SetLogFormat(const ALogFormat: string): THorseLoggerLogFileConfig;
     function SetDir(const ADir: string): THorseLoggerLogFileConfig;
-    function SetLogName(const ALogName: string): THorseLoggerLogFileConfig;
     function GetLogFormat(out ALogFormat: string): THorseLoggerLogFileConfig;
     function GetDir(out ADir: string): THorseLoggerLogFileConfig;
-    function GetLogName(out ALogName: string): THorseLoggerLogFileConfig;
     class function New: THorseLoggerLogFileConfig;
   end;
 
@@ -66,7 +54,7 @@ uses
 {$IFDEF FPC}
   SysUtils, fpJSON, SyncObjs;
 {$ELSE}
-  System.SysUtils, System.IOUtils, System.JSON, System.SyncObjs, System.Types;
+  System.SysUtils, System.IOUtils, System.JSON, System.SyncObjs;
 {$ENDIF}
 
 { THorseLoggerProviderLogFile }
@@ -122,20 +110,16 @@ var
   LLog: THorseLoggerLog;
   LParams: TArray<string>;
   LValue: {$IFDEF FPC}THorseLoggerLogItemString{$ELSE}string{$ENDIF};
-  LLogStr, LFilename, LLogName: string;
+  LLogStr, LFilename: string;
   LTextFile: TextFile;
 begin
   if FConfig = nil then
     FConfig := THorseLoggerLogFileConfig.New;
   FConfig.GetLogFormat(LLogStr).GetDir(LFilename);
-  FConfig.GetLogFormat(LLogStr).GetLogName(LLogName);
-
-  if (LFilename <> EmptyStr) and (not DirectoryExists(LFilename)) then
-    ForceDirectories(LFilename);
   {$IFDEF FPC}
-  LFilename := ConcatPaths([LFilename, LLogName + '_' + FormatDateTime('yyyy-mm-dd', Now()) + '.log']);
+  LFilename := ConcatPaths([LFilename, 'access_' + FormatDateTime('yyyy-mm-dd', Now()) + '.log']);
   {$ELSE}
-  LFilename := TPath.Combine(LFilename, LLogName + '_' + FormatDateTime('yyyy-mm-dd', Now()) + '.log');
+  LFilename := TPath.Combine(LFilename, 'access_' + FormatDateTime('yyyy-mm-dd', Now()) + '.log');
   {$ENDIF}
   LLogCache := ExtractLogCache;
   try
@@ -173,65 +157,28 @@ end;
 
 function THorseLoggerProviderLogFileManager.SetConfig(AConfig: THorseLoggerLogFileConfig): THorseLoggerProviderLogFileManager;
 begin
-  FConfig := AConfig;
   Result := Self;
+  FConfig := AConfig;
 end;
 
 { THorseLoggerConfig }
 
-{$IFDEF LINUX}
-function GetModuleFileName(Module: HINST; lpFilename: PChar; nSize: DWORD): DWORD; stdcall;
-var
-  LPath: string;
-begin
-  LPath := GetEnvironmentVariable('_');
-  if Integer(nSize) <= Length(LPath) then
-    Result := 0
-  else
-  begin
-    StrPCopy(lpFilename, LPath);
-    Result := Length(LPath);
-  end;
-end;
-{$ENDIF}
-
 constructor THorseLoggerLogFileConfig.Create;
-{$IFNDEF FPC}
-const
-  INVALID_PATH = '\\?\';
-var
-  LPath: array[0..MAX_PATH - 1] of Char;
-{$ENDIF}
 begin
   FLogFormat := DEFAULT_HORSE_LOG_FORMAT;
-  {$IFDEF FPC}
   FDir := ExtractFileDir(ParamStr(0));
-  FLogName := 'access';
-  {$ELSE}
-  SetString(FDir, LPath, GetModuleFileName(HInstance, LPath, SizeOf(LPath)));
-  FDir := FDir.Replace(INVALID_PATH, EmptyStr);
-  FLogName := 'access_' + ExtractFileName(FDir).Replace(ExtractFileExt(FDir), EmptyStr);
-  FDir := ExtractFilePath(FDir) ;
-  {$ENDIF}
-  FDir := FDir + '\logs';
 end;
 
 function THorseLoggerLogFileConfig.GetDir(out ADir: string): THorseLoggerLogFileConfig;
 begin
-  ADir := FDir;
   Result := Self;
+  ADir := FDir;
 end;
 
 function THorseLoggerLogFileConfig.GetLogFormat(out ALogFormat: string): THorseLoggerLogFileConfig;
 begin
+  Result := Self;
   ALogFormat := FLogFormat;
-  Result := Self;
-end;
-
-function THorseLoggerLogFileConfig.GetLogName(out ALogName: string): THorseLoggerLogFileConfig;
-begin
-  ALogName := FLogName;
-  Result := Self;
 end;
 
 class function THorseLoggerLogFileConfig.New: THorseLoggerLogFileConfig;
@@ -241,20 +188,16 @@ end;
 
 function THorseLoggerLogFileConfig.SetDir(const ADir: string): THorseLoggerLogFileConfig;
 begin
-  FDir := ADir;
   Result := Self;
+  if not DirectoryExists(ADir) then
+    CreateDir(ADir);
+  FDir := ADir;
 end;
 
 function THorseLoggerLogFileConfig.SetLogFormat(const ALogFormat: string): THorseLoggerLogFileConfig;
 begin
+  Result := Self;
   FLogFormat := ALogFormat;
-  Result := Self;
-end;
-
-function THorseLoggerLogFileConfig.SetLogName(const ALogName: string): THorseLoggerLogFileConfig;
-begin
-  FLogName := ALogName;
-  Result := Self;
 end;
 
 end.

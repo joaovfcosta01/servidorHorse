@@ -15,7 +15,7 @@ boss install github.com/viniciussanchez/dataset-serialize
 ```
 
 ## Manual Installation for Delphi
-If you choose to install manually, simply add the following folders to your project, in *Project > Options > Building > Delphi Compiler > Search path*
+If you choose to install manually, simply add the following folders to your project, in *Project > Options > Resource Compiler > Directories and Conditionals > Include file search path*
 ```
 ../dataset-serialize/src
 ```
@@ -159,10 +159,6 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportNullValues := True;
 ```
-* Attempts to convert a string to JSON when the string starts with { or [
-```pascal
-  TDataSetSerializeConfig.GetInstance.Export.TryConvertStringToJson := True;
-```
 * Export only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportOnlyFieldsVisible := True;
@@ -171,44 +167,28 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.ExportChildDataSetAsJsonObject := False;
 ```
-* Export Largeint as string
-```pascal
-  TDataSetSerializeConfig.GetInstance.Export.ExportLargeIntAsString := False;
-```
-* Export BCD as float
-```pascal
-  TDataSetSerializeConfig.GetInstance.Export.ExportBCDAsFloat := False;
-```
 * Import only fields visible
 ```pascal
   TDataSetSerializeConfig.GetInstance.Import.ImportOnlyFieldsVisible := True;
 ```
-* Base64 decode Blob fields on import
-```pascal
-  TDataSetSerializeConfig.GetInstance.Import.DecodeBase64BlobField := True;
-```
-* Remove blank space on FieldName
-```pascal
-  TDataSetSerializeConfig.GetInstance.RemoveBlankSpaceFieldName := True; // default
-```
 * Case name definition
 ```pascal
   // cndNone, cndLower, cndUpper, cndLowerCamelCase, cndUpperCamelCase
-  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := TCaseNameDefinition.cndLowerCamelCase;
+  TDataSetSerializeConfig.GetInstance.CaseNameDefinition := cndLowerCamelCase;
   
-  TCaseNameDefinition.cndNone:
+  cndNone:
   [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
   
-  TCaseNameDefinition.cndLower:
+  cndLower:
   [{"mob_icadastro":11795,"mob_emi_reg":6,"codigodocliente":1,"cdocumen1":"999999"}]
 
-  TCaseNameDefinition.cndUpper:
+  cndUpper:
   [{"MOB_ICADASTRO":11795,"MOB_EMI_REG":6,"CODIGODOCLIENTE":1,"CDOCUMEN1":"999999"}]
 
-  TCaseNameDefinition.cndLowerCamelCase:
+  cndLowerCamelCase :
   [{"mobIcadastro":11795,"mobEmiReg":6,"codigodocliente":1,"cdocumen1":"999999"}]
 
-  TCaseNameDefinition.cndUpperCamelCase:
+  cndUpperCamelCase::
   [{"MobIcadastro":11795,"MobEmiReg":6,"Codigodocliente":1,"Cdocumen1":"999999"}]  
 ```
 * Format date (for export field type equals ftDate)
@@ -218,10 +198,6 @@ TDataSetSerializeConfig.GetInstance.DateInputIsUTC := True;
 * Format currency (for export field type equals ftCurrency)
 ```pascal
   TDataSetSerializeConfig.GetInstance.Export.FormatCurrency := '0.00##';
-```
-* Format float (for export field type equals ftFloat)
-```pascal
-  TDataSetSerializeConfig.GetInstance.Export.FormatFloat := ',0.00';
 ```
 * Define DataSet prefixes
 ```pascal
@@ -233,9 +209,13 @@ Check out our sample project for each situation presented above in operation. If
 
 ![dataset-serialize](img/img-02.png)
 
-## 💻 Code Contributors
+## Team
 
-<img src="https://opencollective.com/dataset-serialize/contributors.svg?width=890&button=false" alt="Code Contributors" style="max-width:100%;">
+This project is maintained by the following person(s) and a bunch of [awesome contributors](https://github.com/viniciussanchez/dataset-serialize/graphs/contributors).
+
+[![Vinicius Sanchez](https://avatars3.githubusercontent.com/u/16382981?s=60&v=4)](https://github.com/viniciussanchez) | [![Mateus Vicente](https://avatars0.githubusercontent.com/u/50463556?s=60&v=4)](https://github.com/mateusvicente100)
+--- | ---
+[Vinicius Sanchez](https://github.com/viniciussanchez) | [Mateus Vicente](https://github.com/mateusvicente100)
 
 ## License
 

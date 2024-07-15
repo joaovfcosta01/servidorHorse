@@ -11,22 +11,22 @@ uses
   Horse.Logger.Provider.Console, // It's necessary to use the unit
   SysUtils;
 
-//var
-//  LLogFileConfig: THorseLoggerConsoleConfig;
+var
+  LLogFileConfig: THorseLoggerConsoleConfig;
 
-procedure GetPing(Req: THorseRequest; Res: THorseResponse);
+procedure GetPing(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
 begin
   Res.Send('Pong');
 end;
 
-procedure OnListen;
+procedure OnListen(Horse: THorse);
 begin
-  Writeln(Format('Server is runing on %s:%d', [THorse.Host, THorse.Port]));
+  Writeln(Format('Server is runing on %s:%d', [Horse.Host, Horse.Port]));
 end;
 
 begin
-  // LLogFileConfig := THorseLoggerConsoleConfig.New
-  //   .SetLogFormat('${request_clientip} [${time}] ${response_status}');
+  LLogFileConfig := THorseLoggerConsoleConfig.New
+    .SetLogFormat('${request_clientip} [${time}] ${response_status}');
 
   // You can also specify the log format:
   // THorseLoggerManager.RegisterProvider(THorseLoggerProviderConsole.New(LLogFileConfig));

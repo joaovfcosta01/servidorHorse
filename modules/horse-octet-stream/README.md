@@ -1,5 +1,5 @@
 # horse-octet-stream
-<b>horse-octet-stream</b> is an official middleware for working with Stream in APIs developed with the <a href="https://github.com/HashLoad/horse">Horse</a> framework.
+<b>horse-octet-stream</b> is a official middleware for working with Stream in APIs developed with the <a href="https://github.com/HashLoad/horse">Horse</a> framework.
 <br>We created a channel on Telegram for questions and support:<br><br>
 <a href="https://t.me/hashload">
   <img src="https://img.shields.io/badge/telegram-join%20channel-7289DA?style=flat-square">
@@ -65,7 +65,7 @@ var
 begin
   // Now you can send your stream:
   LStream := TFileStream.Create(ExtractFilePath(ParamStr(0)) + 'horse.pdf', fmOpenRead);
-  Res.Send<TStream>(LStream).ContentType('application/pdf');
+  Res.Send<TStream>(LStream);
 end;
 
 begin

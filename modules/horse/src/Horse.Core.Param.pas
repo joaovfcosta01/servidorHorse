@@ -1,47 +1,73 @@
 unit Horse.Core.Param;
 
 {$IF DEFINED(FPC)}
-{$MODE DELPHI}{$H+}
+  {$MODE DELPHI}{$H+}
 {$ENDIF}
 
 interface
 
 uses
 {$IF DEFINED(FPC)}
-  SysUtils,
-  Classes,
-  DateUtils,
-  Generics.Collections,
-  fpHTTP,
-  HTTPDefs,
+  SysUtils, Classes, DateUtils, Generics.Collections, fpHTTP, fphttpserver, HTTPDefs,
 {$ELSE}
-  System.SysUtils,
-  System.Classes,
-  System.DateUtils,
-  System.Generics.Collections,
-  Horse.Exception,
-  Horse.Commons,
+  System.SysUtils, System.Classes, System.DateUtils, System.Generics.Collections,
 {$ENDIF}
-  Horse.Core.Param.Field;
+  Horse.Exception, Horse.Commons, Horse.Core.Param.Field;
 
 type
   THorseList = TDictionary<string, string>;
 
+  THorseCoreParamConfig = class
+  private
+    class var FInstance: THorseCoreParamConfig;
+
+    FRequiredMessage: string;
+    FInvalidFormatMessage: string;
+    FDateFormat: string;
+    FTimeFormat: string;
+    FReturnUTC: Boolean;
+    FTrueValue: string;
+
+    constructor Create;
+  public
+    function RequiredMessage(const AValue: string): THorseCoreParamConfig; overload;
+    function RequiredMessage: string; overload;
+
+    function InvalidFormatMessage(const AValue: string): THorseCoreParamConfig; overload;
+    function InvalidFormatMessage: string; overload;
+
+    function DateFormat(const AValue: string): THorseCoreParamConfig; overload;
+    function DateFormat: string; overload;
+
+    function TimeFormat(const AValue: string): THorseCoreParamConfig; overload;
+    function TimeFormat: string; overload;
+
+    function ReturnUTC(const AValue: Boolean): THorseCoreParamConfig; overload;
+    function ReturnUTC: Boolean; overload;
+
+    function TrueValue(const AValue: string): THorseCoreParamConfig; overload;
+    function TrueValue: string; overload;
+
+    destructor Destroy; override;
+
+    class function GetInstance: THorseCoreParamConfig;
+    class destructor UnInitialize;
+  end;
+
   THorseCoreParam = class
   private
     FParams: THorseList;
-    FFiles: TDictionary<String, TStream>;
     FFields: TDictionary<string, THorseCoreParamField>;
     FContent: TStrings;
     FRequired: Boolean;
+
     function GetItem(const AKey: string): string;
     function GetDictionary: THorseList;
     function GetCount: Integer;
     function GetContent: TStrings;
-    function AsString(const AKey: string): string;
-    procedure ClearFields;
 
-    function NewField(const AKey: String): THorseCoreParamField;
+    procedure ClearFields;
+    function AsString(const AKey: string): string;
   public
     function Required(const AValue: Boolean): THorseCoreParam;
     function Field(const AKey: string): THorseCoreParamField;
@@ -53,15 +79,13 @@ type
     property Count: Integer read GetCount;
     property Items[const AKey: string]: string read GetItem; default;
     property Dictionary: THorseList read GetDictionary;
-    function AddStream(const AKey: string; const AContent: TStream): THorseCoreParam;
-    constructor Create(const AParams: THorseList);
+    constructor Create(AParams: THorseList);
     destructor Destroy; override;
   end;
 
 implementation
 
-uses
-  Horse.Core.Param.Config;
+{ THorseCoreParam }
 
 function THorseCoreParam.ContainsKey(const AKey: string): Boolean;
 var
@@ -80,7 +104,7 @@ begin
   Result := FParams.ContainsValue(AValue);
 end;
 
-constructor THorseCoreParam.Create(const AParams: THorseList);
+constructor THorseCoreParam.Create(AParams: THorseList);
 begin
   FParams := AParams;
   FRequired := False;
@@ -91,8 +115,6 @@ begin
   FParams.Free;
   FContent.Free;
   ClearFields;
-  if Assigned(FFiles) then
-    FFiles.Free;
   inherited;
 end;
 
@@ -105,9 +127,9 @@ begin
 
   LFieldName := AKey.ToLower;
   if FFields.ContainsKey(LFieldName) then
-    Exit(FFields.Items[LFieldName]);
+    Exit( FFields.Items[LFieldName] );
 
-  Result := NewField(AKey);
+  Result := THorseCoreParamField.create(FParams, AKey);
   try
     Result
       .Required(FRequired)
@@ -123,15 +145,6 @@ begin
     Result.Free;
     raise;
   end;
-end;
-
-function THorseCoreParam.AddStream(const AKey: string; const AContent: TStream): THorseCoreParam;
-begin
-  Result := Self;
-  if not Assigned(FFiles) then
-    FFiles := TDictionary<String, TStream>.Create;
-
-  FFiles.AddOrSetValue(AKey, AContent);
 end;
 
 function THorseCoreParam.AsString(const AKey: string): string;
@@ -154,6 +167,7 @@ begin
   begin
     for LKey in FFields.Keys do
       FFields.Items[LKey].Free;
+
     FFields.Free;
   end;
 end;
@@ -188,24 +202,6 @@ begin
   Result := EmptyStr;
 end;
 
-function THorseCoreParam.NewField(const AKey: String): THorseCoreParamField;
-var
-  LKey: String;
-begin
-  if Assigned(FFiles) then
-  begin
-    for LKey in FFiles.Keys do
-    begin
-      if AnsiSameText(LKey, AKey) then
-      begin
-        Result := THorseCoreParamField.Create(FFiles.Items[LKey], AKey);
-        Exit;
-      end;
-    end;
-  end;
-  Result := THorseCoreParamField.Create(FParams, AKey);
-end;
-
 function THorseCoreParam.Required(const AValue: Boolean): THorseCoreParam;
 begin
   Result := Self;
@@ -227,6 +223,103 @@ begin
   Result := ContainsKey(AKey);
   if Result then
     AValue := AsString(AKey);
+end;
+
+{ THorseCoreParamConfig }
+
+constructor THorseCoreParamConfig.Create;
+begin
+  FReturnUTC := True;
+  FDateFormat := 'yyyy-MM-dd';
+  FTimeFormat := 'hh:mm:ss';
+  FTrueValue := 'true';
+  FRequiredMessage := 'The %s param is required.';
+  FInvalidFormatMessage := 'The %0:s param ''%1:s'' is not valid a %2:s type.';
+end;
+
+function THorseCoreParamConfig.DateFormat(const AValue: string): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FDateFormat := AValue;
+end;
+
+function THorseCoreParamConfig.DateFormat: string;
+begin
+  Result := FDateFormat;
+end;
+
+destructor THorseCoreParamConfig.Destroy;
+begin
+
+  inherited;
+end;
+
+class function THorseCoreParamConfig.GetInstance: THorseCoreParamConfig;
+begin
+  if not Assigned(FInstance) then
+    FInstance := THorseCoreParamConfig.Create;
+  Result := FInstance;
+end;
+
+function THorseCoreParamConfig.InvalidFormatMessage: string;
+begin
+  Result := FInvalidFormatMessage;
+end;
+
+function THorseCoreParamConfig.InvalidFormatMessage(const AValue: string): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FInvalidFormatMessage := AValue;
+end;
+
+function THorseCoreParamConfig.RequiredMessage(const AValue: string): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FRequiredMessage := AValue;
+end;
+
+function THorseCoreParamConfig.RequiredMessage: string;
+begin
+  Result := FRequiredMessage;
+end;
+
+function THorseCoreParamConfig.ReturnUTC(const AValue: Boolean): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FReturnUTC := AValue;
+end;
+
+function THorseCoreParamConfig.ReturnUTC: Boolean;
+begin
+  Result := FReturnUTC;
+end;
+
+function THorseCoreParamConfig.TimeFormat: string;
+begin
+  Result := FTimeFormat;
+end;
+
+function THorseCoreParamConfig.TimeFormat(const AValue: string): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FTimeFormat := AValue;
+end;
+
+function THorseCoreParamConfig.TrueValue(const AValue: string): THorseCoreParamConfig;
+begin
+  Result := Self;
+  FTrueValue := AValue;
+end;
+
+function THorseCoreParamConfig.TrueValue: string;
+begin
+  Result := FTrueValue;
+end;
+
+class destructor THorseCoreParamConfig.UnInitialize;
+begin
+  if Assigned(FInstance) then
+    FreeAndNil(FInstance);
 end;
 
 end.

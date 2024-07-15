@@ -25,14 +25,14 @@ begin
   // THorse.Use(HorseBasicAuthentication(MyCallbackValidation, THorseBasicAuthenticationConfig.New.SkipRoutes(['/ping'])));
 
   THorse.Get('/ping',
-    procedure(Req: THorseRequest; Res: THorseResponse)
+    procedure(Req: THorseRequest; Res: THorseResponse; Next: TProc)
     begin
       Res.Send('pong');
     end);
 
   THorse.Listen(9000,
-    procedure
+    procedure(Horse: THorse)
     begin
-      Writeln(Format('Server is runing on port %d', [THorse.Port]));
+      Writeln(Format('Server is runing on port %d', [Horse.Port]));
     end);
 end.

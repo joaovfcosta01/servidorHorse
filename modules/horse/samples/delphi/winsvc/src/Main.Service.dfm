@@ -1,4 +1,5 @@
 object MainService: TMainService
+  OldCreateOrder = False
   OnCreate = ServiceCreate
   DisplayName = 'MainService'
   StartType = stManual

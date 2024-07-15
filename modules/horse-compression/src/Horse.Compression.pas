@@ -61,12 +61,12 @@ begin
     if Trim(Res.RawWebResponse.Content) = EmptyStr then
       LStringStream := TStringStream.Create({$IF DEFINED(FPC)}TJsonData(Res.Content).AsJSON{$ELSE}TJSONValue(Res.Content).ToJSON{$ENDIF})
     else
-      LStringStream := TStringStream.Create(Res.RawWebResponse.Content {$IF NOT DEFINED(FPC)}, TEncoding.UTF8{$ENDIF});
+      LStringStream := TStringStream.Create(Res.RawWebResponse.Content);
     if LStringStream.Size <= CompressionThreshold then
       Exit;
     LMemoryStream := TMemoryStream.Create;
     {$IF DEFINED(FPC)}
-    LZStream := TCompressionStream.Create(Tcompressionlevel.clmax, LMemoryStream, False);
+    LZStream := TCompressionStream.Create(Tcompressionlevel.clmax, LMemoryStream, LResponseCompressionType.WindowsBits = -15);
     {$ELSE}
     LZStream := TZCompressionStream.Create(LMemoryStream, TZCompressionLevel.zcMax, LResponseCompressionType.WindowsBits);
     {$ENDIF}

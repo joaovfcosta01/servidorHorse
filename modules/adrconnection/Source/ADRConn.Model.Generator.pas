@@ -6,19 +6,20 @@ uses
   ADRConn.Model.Interfaces,
   Data.DB;
 
-type
-  TADRConnModelGenerator = class abstract(TInterfacedObject, IADRGenerator)
+type TADRConnModelGenerator = class abstract(TInterfacedObject, IADRGenerator)
+
   protected
     [Weak]
     FQuery: IADRQuery;
 
-    function GetCurrentSequence(AName: string): Double; virtual; abstract;
-    function GetNextSequence(AName: string): Double; virtual; abstract;
+    function GetCurrentSequence(Name: String): Double; virtual; abstract;
+    function GetNextSequence(Name: String): Double; virtual; abstract;
     function GetSequence: Double;
+
   public
-    constructor Create(AQuery: IADRQuery);
-    class function NewGenerator(AConnection: IADRConnection; AQuery: IADRQuery): IADRGenerator;
-  end;
+    constructor create(Query: IADRQuery);
+    class function NewGenerator(Connection: IADRConnection; Query: IADRQuery): IADRGenerator;
+end;
 
 implementation
 
@@ -30,34 +31,30 @@ uses
   ADRConn.Model.Generator.Postgres,
   ADRConn.Model.Generator.SQLite;
 
-constructor TADRConnModelGenerator.Create(AQuery: IADRQuery);
+constructor TADRConnModelGenerator.create(Query: IADRQuery);
 begin
-  FQuery := AQuery;
+  FQuery := Query;
 end;
 
 function TADRConnModelGenerator.GetSequence: Double;
 var
-  LDataSet: TDataSet;
+  dataSet: TDataSet;
 begin
-  LDataSet := FQuery.OpenDataSet;
+  dataSet := FQuery.OpenDataSet;
   try
-    Result := LDataSet.Fields[0].AsFloat;
+    result := dataSet.Fields[0].AsFloat;
   finally
-    LDataSet.Free;
+    dataSet.Free;
   end;
 end;
 
-class function TADRConnModelGenerator.NewGenerator(AConnection: IADRConnection; AQuery: IADRQuery): IADRGenerator;
+class function TADRConnModelGenerator.NewGenerator(Connection: IADRConnection; Query: IADRQuery): IADRGenerator;
 begin
-  case AConnection.Params.Driver of
-    adrFirebird:
-      Result := TADRConnModelGeneratorFirebird.New(AQuery);
-    adrMySql:
-      Result := TADRConnModelGeneratorMySQL.New(AQuery);
-    adrPostgres:
-      Result := TADRConnModelGeneratorPostgres.New(AQuery);
-    adrSQLite:
-      Result := TADRConnModelGeneratorSQLite.New(AQuery);
+  case Connection.Params.Driver of
+    adrFirebird : result := TADRConnModelGeneratorFirebird.New(Query);
+    adrMySql : result := TADRConnModelGeneratorMySQL.New(Query);
+    adrPostgres : result := TADRConnModelGeneratorPostgres.New(Query);
+    adrSQLite : Result := TADRConnModelGeneratorSQLite.New(Query);
   end;
 end;
 

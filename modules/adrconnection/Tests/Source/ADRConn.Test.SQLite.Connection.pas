@@ -11,10 +11,12 @@ uses
 type
   [TestFixture]
   TADRConnTestSQLite = class(TADRConnTestBase)
+
   public
     [Test]
     procedure TestConnection;
   end;
+
 
 implementation
 
@@ -26,8 +28,6 @@ begin
   FConnection.Params
     .Driver(adrSQLite)
     .Database('pdvmobile.db3')
-    .AddParam('OpenMode', 'ReadWrite')
-    .AddParam('LockingMode', 'Normal')
   .&End;
 
   Assert.WillNotRaise(TestConnect);

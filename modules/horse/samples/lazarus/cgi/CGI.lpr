@@ -2,15 +2,14 @@ program CGI;
 
 {$MODE DELPHI}{$H+}
 
-uses Horse;
+uses Horse, SysUtils;
 
-procedure GetPing(Req: THorseRequest; Res: THorseResponse);
+procedure GetPing(Req: THorseRequest; Res: THorseResponse; Next: TNextProc);
 begin
   Res.Send('pong');
 end;
 
 begin
-  // Need to set "HORSE_CGI" compilation directive
   THorse.Get('/ping', GetPing);
   THorse.Listen;
 end.

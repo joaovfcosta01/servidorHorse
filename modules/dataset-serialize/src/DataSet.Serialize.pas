@@ -119,7 +119,6 @@ type
     ///   Invisible fields will not be generated.
     /// </remarks>
     function SaveStructure: TJSONArray;
-    function SaveStructureString: string;
     /// <summary>
     ///   Loads fields from a DataSet based on a JSONArray.
     /// </summary>
@@ -152,23 +151,6 @@ type
     /// </remarks>
     procedure LoadFromJSON(const AJSONObject: TJSONObject; const AOwns: Boolean = True); overload;
     /// <summary>
-    ///   Loads the DataSet with data from a JSON object.
-    /// </summary>
-    /// <param name="AJSONObject">
-    ///   Refers to JSON that you want to load.
-    /// </param>
-    /// <param name="ARootElement">
-    ///   Elemento raiz do JSON
-    /// </param>
-    /// <param name="AOwns">
-    ///   Destroy JSON in the end.
-    /// </param>
-    /// <remarks>
-    ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
-    ///   DataSet fields. It's not case-sensitive.
-    /// </remarks>
-    procedure LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string; const AOwns: Boolean = True); overload;
-    /// <summary>
     ///   Loads the DataSet with data from a JSON array.
     /// </summary>
     /// <param name="AJSONArray">
@@ -188,14 +170,11 @@ type
     /// <param name="AJSONString">
     ///   Refers to JSON that you want to load.
     /// </param>
-    /// <param name="ARootElement">
-    ///   Elemento raiz do JSON
-    /// </param>
     /// <remarks>
     ///   Only the keys that make up the DataSet field list will be loaded. The JSON keys must have the same name as the
     ///   DataSet fields. It's not case-sensitive.
     /// </remarks>
-    procedure LoadFromJSON(const AJSONString: string; const ARootElement: string = ''); overload;
+    procedure LoadFromJSON(const AJSONString: string); overload;
     /// <summary>
     ///   Updates the DataSet data with JSON object data.
     /// </summary>
@@ -322,18 +301,6 @@ begin
   end;
 end;
 
-function TDataSetSerializeHelper.SaveStructureString: string;
-var
-  LJSONArray: TJSONArray;
-begin
-  LJSONArray := Self.SaveStructure;
-  try
-    Result := {$IF DEFINED(FPC)}LJSONArray.AsJSON{$ELSE}LJSONArray.ToString{$ENDIF};
-  finally
-    LJSONArray.Free;
-  end;
-end;
-
 function TDataSetSerializeHelper.ValidateJSON(const AJSONObject: TJSONObject; const ALang: TLanguageType = enUS; const AOwns: Boolean = True): TJSONArray;
 var
   LJSONSerialize: TJSONSerialize;
@@ -359,41 +326,10 @@ begin
 end;
 
 procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const AOwns: Boolean = True);
-begin
-  LoadFromJSON(AJSONObject, EmptyStr, AOwns);
-end;
-
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONObject: TJSONObject; const ARootElement: string; const AOwns: Boolean = True);
 var
-  LJSON: {$IF DEFINED(FPC)}TJSONData{$ELSE}TJSONValue{$ENDIF};
   LJSONSerialize: TJSONSerialize;
 begin
-  if ARootElement.Trim.IsEmpty then
-    LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns)
-  else
-  begin
-    try
-      {$IF DEFINED(FPC)}
-      LJSON := AJSONObject.Find(ARootElement);
-      {$ELSE}
-        {$IF COMPILERVERSION <= 32}
-          if not AJSONObject.TryGetValue<TJSONValue>(ARootElement,LJSON) then
-            LJSON := nil;
-        {$ELSE}
-          LJSON := AJSONObject.FindValue(ARootElement);
-        {$IFEND}
-      {$ENDIF}	  
-      if not Assigned(LJSON) then
-        raise Exception.Create('Root element not found!');
-      if LJSON.InheritsFrom(TJSONArray) then
-        LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONArray, True)
-      else
-        LJSONSerialize := TJSONSerialize.Create(LJSON.Clone as TJSONObject, True);
-    finally
-      if AOwns then
-        AJSONObject.Free;
-    end;
-  end;
+  LJSONSerialize := TJSONSerialize.Create(AJSONObject, AOwns);
   try
     LJSONSerialize.ToDataSet(Self);
   finally
@@ -433,10 +369,10 @@ begin
     Result := TJSONArray.Create();
 end;
 
-procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONString: string; const ARootElement: string = '');
+procedure TDataSetSerializeHelper.LoadFromJSON(const AJSONString: string);
 begin
   if Trim(AJSONString).StartsWith('{') then
-    LoadFromJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject, ARootElement)
+    LoadFromJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONObject)
   else if Trim(AJSONString).StartsWith('[') then
     LoadFromJSON({$IF DEFINED(FPC)}GetJSON(AJSONString){$ELSE}TJSONObject.ParseJSONValue(TEncoding.UTF8.GetBytes(AJSONString), 0){$ENDIF} as TJSONArray);
 end;

@@ -10,32 +10,31 @@ uses
   FireDAC.Comp.Client,
   FireDAC.Stan.Def,
   FireDAC.Stan.Async,
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   FireDAC.Comp.UI,
   FireDAC.VCLUI.Wait,
   FireDAC.UI.Intf,
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF}
+  {$IFDEF LINUX}
   FireDAC.ConsoleUI.Wait,
-{$ENDIF}
+  {$ENDIF}
   Firedac.Phys,
   FireDAC.DApt,
   System.Classes,
   System.SysUtils;
 
-type
-  TADRConnModelFiredacConnection = class(TInterfacedObject, IADRConnection)
+type TADRConnModelFiredacConnection = class(TInterfacedObject, IADRConnection)
+
   private
     FConnection: TFDConnection;
-{$IF (not Defined(ANDROID)) and (not Defined(IOS))}
     FCursor: TFDGUIxWaitCursor;
-{$ENDIF}
     FDriver: TFDPhysDriverLink;
     FParams: IADRConnectionParams;
 
     procedure Setup;
     procedure CreateDriver;
-    function GetDriverId: string;
+    function GetDriverId: String;
+
   protected
     function Connection: TCustomConnection;
     function Component: TComponent;
@@ -48,11 +47,13 @@ type
     function Commit: IADRConnection;
     function Rollback: IADRConnection;
     function InTransaction: Boolean;
+
   public
-    constructor Create;
+    constructor create;
     destructor Destroy; override;
     class function New: IADRConnection;
-  end;
+
+end;
 
 implementation
 
@@ -60,18 +61,18 @@ implementation
 
 function TADRConnModelFiredacConnection.Commit: IADRConnection;
 begin
-  Result := Self;
+  result := Self;
   FConnection.Commit;
 end;
 
 function TADRConnModelFiredacConnection.Component: TComponent;
 begin
-  Result := FConnection;
+  result := FConnection;
 end;
 
 function TADRConnModelFiredacConnection.Connect: IADRConnection;
 begin
-  Result := Self;
+  result := Self;
   if not FConnection.Connected then
   begin
     Setup;
@@ -81,16 +82,14 @@ end;
 
 function TADRConnModelFiredacConnection.Connection: TCustomConnection;
 begin
-  Result := FConnection;
+  result := FConnection;
 end;
 
-constructor TADRConnModelFiredacConnection.Create;
+constructor TADRConnModelFiredacConnection.create;
 begin
   FConnection := TFDConnection.Create(nil);
-  FParams := TADRConnModelParams.New(Self);
-{$IF (not Defined(ANDROID)) and (not Defined(IOS))}
   FCursor := TFDGUIxWaitCursor.Create(nil);
-{$ENDIF}
+  FParams := TADRConnModelParams.New(Self);
 end;
 
 procedure TADRConnModelFiredacConnection.CreateDriver;
@@ -104,29 +103,23 @@ destructor TADRConnModelFiredacConnection.Destroy;
 begin
   FConnection.Free;
   FDriver.Free;
-{$IF (not Defined(ANDROID)) and (not Defined(IOS))}
   FCursor.Free;
-{$ENDIF}
   inherited;
 end;
 
 function TADRConnModelFiredacConnection.Disconnect: IADRConnection;
 begin
-  Result := Self;
+  result := Self;
   FConnection.Connected := False;
 end;
 
-function TADRConnModelFiredacConnection.GetDriverId: string;
+function TADRConnModelFiredacConnection.GetDriverId: String;
 begin
   case FParams.Driver of
-    adrFirebird:
-      Result := 'FB';
-    adrMySql:
-      Result := 'MySQL';
-    adrSQLite:
-      Result := 'SQLite';
-    adrPostgres:
-      Result := 'PG';
+    adrFirebird : Result := 'FB';
+    adrMySql : Result := 'MySQL';
+    adrSQLite : Result := 'SQLite';
+    adrPostgres : result := 'PG';
   else
     raise Exception.CreateFmt('Driver Firedac not found for %s.', [FParams.Driver.toString]);
   end;
@@ -139,7 +132,7 @@ end;
 
 class function TADRConnModelFiredacConnection.New: IADRConnection;
 begin
-  Result := Self.Create;
+  result := Self.create;
 end;
 
 function TADRConnModelFiredacConnection.Params: IADRConnectionParams;
@@ -154,10 +147,6 @@ begin
 end;
 
 procedure TADRConnModelFiredacConnection.Setup;
-var
-  LParams: TArray<string>;
-  LName: string;
-  LValue: string;
 begin
   FConnection.DriverName := GetDriverId;
   FConnection.Params.Values['Database'] := FParams.Database;
@@ -166,13 +155,6 @@ begin
   FConnection.Params.Values['Server'] := FParams.Server;
   FConnection.Params.Values['Port'] := IntToStr(FParams.Port);
   FConnection.TxOptions.AutoCommit := FParams.AutoCommit;
-
-  LParams := FParams.ParamNames;
-  for LName in LParams do
-  begin
-    LValue := FParams.ParamByName(LName);
-    FConnection.Params.Values[LName] := LValue;
-  end;
 
   CreateDriver;
 end;
@@ -184,4 +166,3 @@ begin
 end;
 
 end.
-
